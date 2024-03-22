@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  postgres_db:
+  postgres-db:
     image: postgres:latest
     container_name: postgres_container
     environment:
@@ -17,14 +17,14 @@ services:
     container_name: cyclehub_container
     ports:
       - 8000:8000
-    command: bash -c "gunicorn --bind 0.0.0.0:8000 cyclehub.wsgi:application && python manage.py collectstatic && python manage.py makemigrations "
+    command: bash -c "gunicorn --bind 0.0.0.0:8000 cyclehub.wsgi:application && python manage.py collectstatic && python manage.py migrate "
     environment:
-      DB_HOST: postgres_db
+      DB_HOST: postgres-db
       DB_NAME: cyclehub
       DB_USER: postgres
       DB_PASSWORD: "9207400638"  
     depends_on:
-      - postgres_db
+      - postgres-db
 
 volumes:
   postgres_data:
