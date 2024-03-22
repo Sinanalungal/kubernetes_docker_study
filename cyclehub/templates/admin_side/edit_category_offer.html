@@ -1,0 +1,63 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block style %}
+<title>Edit Category Offer</title>
+{% endblock %}
+{% block content11 %}
+class='active'
+{% endblock %}
+{% block content %}
+<style>
+    body {
+        padding: 20px;
+    }
+
+    .error-message {
+        font-size:10px;
+        color: red;
+    }
+</style>
+
+<form id="myForm" method='POST' action=''>
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="decimalInput">Category Name:</label>
+        <input type="text" class="form-control col-10" value="{{c.category_name}}" id="decimalInput" name="decimalInput" disabled>
+    </div>
+
+    <div class="form-group">
+        <label for="integerInput">Enter offer:</label>
+        <input type="number" value="{{c.category_offer}}" class="form-control col-10" id="integerInput" name="offerinput">
+        <div class="error-message" id="integerInput-error"></div>
+    </div>
+
+    <!-- Save Button -->
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#myForm").submit(function (event) {
+            // Prevent the form from submitting
+            event.preventDefault();
+
+            // Validate the input
+            var inputValue = $("#integerInput").val();
+
+            if (inputValue < 0 || inputValue > 100) {
+                // Display error message
+                $("#integerInput-error").text("Please enter a number between 0 and 100.");
+            } else {
+                // Clear any existing error message
+                $("#integerInput-error").text("");
+                
+                // If validation passes, you can proceed with form submission
+                $("#myForm").unbind("submit").submit();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

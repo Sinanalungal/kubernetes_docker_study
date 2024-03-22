@@ -1,0 +1,119 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content11 %}class='active'{% endblock %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<style>
+    .dataTables_info{
+        font-size:12px;
+        color:black;
+        
+    }
+    .dataTables_paginate{
+        font-size:12px;
+        color:black;
+
+    }
+    .dataTables_length{
+        font-size:12px;
+        color:black;
+    }
+    .dataTables_filter{
+        font-size:14px;
+        color:black;
+    }
+</style>
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1><strong>Products Offer</strong></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Product Offers</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card p-3">
+                    <div class="table-stats  ov-h">
+                        <table class="table datatable table-striped table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="serial">Id</th>
+                                    <th class="avatar">Images</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Brand</th>
+                                    <th>Product Offer</th>
+                                    <th>Manage</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in p %}
+                                <tr>
+                                    <td class="id">{{i.id}}</td>
+                                    <td class="avatar">
+                                        <div class="round-img">
+                                            <img src="{{i.images_set.first.image.url}}" alt="hello">
+                                        </div>
+                                    </td>
+                                    <td><span class="name">{{i.product_name}}</span></td>
+                                    <td><span class="category">{{i.category_id.category_name}}</span></td>
+                                    <td><span class="brand">{{ i.brand_id.brand_name }}</span></td>
+                                    <td><span class="brand">{{ i.product_offer }}</span></td>
+                                    <td>
+                                        <a href='edit_product_offer/{{i.id}}'>
+                                            <button class="badge btn-dark">Manage Offers</button>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %} <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> {% endcomment %}
+
+<script>
+    $(document).ready(function () {
+        // DataTable initialization
+        var dataTable = $('.datatable').DataTable(); // Use DataTable() instead of dataTable()
+
+        // Search functionality
+        $('#searchBtn').on('click', function () {
+            var searchValue = $('#searchInput').val().toLowerCase();
+            dataTable.search(searchValue).draw();
+        });
+
+        // Filter functionality
+        $('#categoryFilter').on('change', function () {
+            var categoryValue = $(this).val().toLowerCase();
+            dataTable.column(3).search(categoryValue).draw(); // Adjust the column index based on your data
+        });
+    });
+</script>
+{% endblock %}

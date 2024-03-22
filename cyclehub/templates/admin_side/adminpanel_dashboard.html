@@ -1,0 +1,406 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block style %} 
+<title>dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/jqvmap@1.5.1/dist/jqvmap.min.css" rel="stylesheet">
+<style>
+    .p-4 {
+        padding: 0.5rem!important;
+    }
+</style>
+{%endblock%}
+
+{% block content1 %}class='active'{%endblock%}
+{% block content %}
+<div class="dropdown float-right mt-4 " style='margin-right:30px!important;'>
+    <button class="btn btn-transparent dropdown-toggle" type="button" id="button1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='font-size:10px;'>
+        {{request.GET.first}}
+    </button>
+    <div class="dropdown-menu" aria-labelledby="timeRangeButton">
+        <a class="dropdown-item" href="../../dashboard?sale={{request.GET.sale}}&first=Total" onclick="changeTimeRange('total')">Total</a>
+        <a class="dropdown-item" href="../../dashboard?sale={{request.GET.sale}}&first=Day" onclick="changeTimeRange('day')">Day</a>
+        <a class="dropdown-item" href="../../dashboard?sale={{request.GET.sale}}&first=Month" onclick="changeTimeRange('month')">Month</a>
+        <a class="dropdown-item" href="../../dashboard?sale={{request.GET.sale}}&first=Year" onclick="changeTimeRange('year')">Year</a>
+    </div>
+</div>
+        <div class="content">          
+            <div class="animated fadeIn">               
+                <div class="row">                   
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-6">
+                            <div class="card-body">                           
+                                <p style='color:white;'><strong> No. Orders</strong></p>
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="count float-left">{{nooforder}}</span>
+                                        <span> &nbsp;</span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Orders</p>
+                                </div>
+                                <div class="card-right float-right text-right">
+                                    <i class="icon fade-5 icon-lg pe-7s-cart text-dark"></i>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-1">
+                            <div class="card-body">
+                                <p style='color:white;'><strong> Revenue</strong></p>
+
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="currency float-left mr-1">₹</span>
+                                        <span class="count">{{revenue}}</span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Revenue</p>
+                                </div>
+                                <div class="card-right float-right text-right p-1">
+                                    <i class="ti-money text-dark border-dark fade-5" style='font-size:4em;'></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="card text-white bg-flat-color-3">
+                            <div class="card-body">
+                                <p style='color:white;'><strong>Customers</strong></p>
+
+                                <div class="card-left pt-1 float-left">
+                                    <h3 class="mb-0 fw-r">
+                                        <span class="count">{{customers}}</span>
+                                    </h3>
+                                    <p class="text-light mt-1 m-0">Total clients</p>
+                                </div>
+
+                                <div class="card-right float-right text-right">
+                                    <i class="icon fade-5 icon-lg pe-7s-users"></i>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>                
+                </div>
+               
+                <div class="clearfix"></div>
+
+
+                <div class="content">
+                    <div class="animated fadeIn">
+                        <div class="row">
+        
+                            <div class="col-lg-6">
+                                <div class="card p-4">
+                                    <div class="card-body">
+                                        <div class="dropdown float-right">
+                                            <button class="btn btn-transparent dropdown-toggle" type="button" id="button4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='font-size:10px;'>
+                                                {{request.GET.sale}}
+                                            <div class="dropdown-menu" aria-labelledby="button4">
+                                                <a class="dropdown-item" href="../../dashboard?sale=Week&first={{request.GET.first}}" onclick="changeTimeRange('week')">Week</a>
+                                                <a class="dropdown-item" href="../../dashboard?sale=Month&first={{request.GET.first}}" onclick="changeTimeRange('month')">Month</a>
+                                                <a class="dropdown-item" href="../../dashboard?sale=Year&first={{request.GET.first}}" onclick="changeTimeRange('year')">Year</a>
+                                            </div>
+                                        </div>
+                                        <h4 class="mb-3"><strong>Total Sales</strong> </h4>
+                                        <canvas id="sales-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card p-4">
+                                    <div class="card-body">
+                                        <h4 class="mb-3"><strong>Most Sold Products</strong> </h4>
+                                        <canvas id="pieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card p-4">
+                                    <div class="card-body">
+                                        <h4 class="mb-3"><strong>Successful Orders By Category</strong></h4>
+                                        <canvas id="singelBarChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card p-4">
+                                    <div class="card-body">
+
+                                        <h4 class="mb-3"><strong> Used Payment Method </strong> </h4>
+                                        <canvas id="doughutChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+        
+        </div>
+    {%endblock%}
+    {% block script %}
+    
+    <!--  Chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.3/dist/Chart.bundle.min.js"></script>
+
+    <!--Chartist Chart-->
+    <script src="https://cdn.jsdelivr.net/npm/chartist@0.11.0/dist/chartist.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist-plugin-legend@0.6.2/chartist-plugin-legend.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery.flot@0.8.3/jquery.flot.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-pie@1.0.0/src/jquery.flot.pie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot-spline@0.0.1/js/jquery.flot.spline.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/simpleweather@3.1.0/jquery.simpleWeather.min.js"></script>
+    <script src={% static 'admin_side/js/init/weather-init.js'%}></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.9.0/dist/fullcalendar.min.js"></script>
+    <script src={% static 'admin_side/js/init/fullcalendar-init.js'%}></script>
+
+    <!--Local Stuff-->
+    <script>
+        jQuery(document).ready(function($) {
+            "use strict";
+            //pie chart
+            var ctx = document.getElementById( "pieChart" );
+            ctx.height = 170;
+            var myChart = new Chart( ctx, {
+                type: 'pie',
+                data: {
+                    datasets: [ {
+                        data:{{mostlistval}},
+                        backgroundColor: [
+                                            "rgba(0, 194, 146,0.9)",
+                                            "rgba(0, 194, 146,0.7)",
+                                            "rgba(0, 194, 146,0.5)",
+                                            "rgba(0, 194, 146,0.3)",
+                                            "rgba(0, 194, 146,0.1)",
+                                            "rgba(0,0,0,0.07)"
+                                        ],
+                        hoverBackgroundColor: [
+                                            "rgba(0, 194, 146,0.9)",
+                                            "rgba(0, 194, 146,0.7)",
+                                            "rgba(0, 194, 146,0.5)",
+                                            "rgba(0, 194, 146,0.3)",
+                                            "rgba(0, 194, 146,0.1)",
+                                            "rgba(0,0,0,0.07)"
+                                        ]
+
+                                    } ],
+                    labels: [
+                                {% for i in mostlistkey%} 
+                                  "{{i}}",
+                                {%endfor%}
+                                ]
+                },
+                options: {
+                    responsive: true
+                }
+            } );
+
+             //Sales chart
+            var ctx = document.getElementById( "sales-chart" );
+            ctx.height = 170;
+            var myChart = new Chart( ctx, {
+                type: 'line',
+                data: {
+                    labels: [ 
+                    {% for i in dataskey %}
+                    {% if request.GET.sale == 'Week' %}
+                      '{{ i|date:"j-m" }}',
+                    {% elif request.GET.sale == 'Month' %}
+                      '{{ i|date:"Y-m" }}',
+                    {% elif request.GET.sale == 'Year' %}
+                       '{{i}}',
+                    {%endif%}
+                  {% endfor %}
+                  ],
+                    type: 'line',
+                    defaultFontFamily: 'Montserrat',
+                    datasets: [  {
+                        label: "Ordered items",
+                        data:{{datasval}},
+                        backgroundColor: 'transparent',
+                        borderColor: 'rgba(40,167,69,0.75)',
+                        borderWidth: 3,
+                        pointStyle: 'circle',
+                        pointRadius: 5,
+                        pointBorderColor: 'transparent',
+                        pointBackgroundColor: 'rgba(40,167,69,0.75)',
+                            } ]
+                },
+                options: {
+                    responsive: true,
+
+                    tooltips: {
+                        mode: 'index',
+                        titleFontSize: 12,
+                        titleFontColor: '#000',
+                        bodyFontColor: '#000',
+                        backgroundColor: '#fff',
+                        titleFontFamily: 'Montserrat',
+                        bodyFontFamily: 'Montserrat',
+                        cornerRadius: 3,
+                        intersect: false,
+                    },
+                    legend: {
+                        display: false,
+                        labels: {
+                            usePointStyle: true,
+                            fontFamily: 'Montserrat',
+                        },
+                    },
+                    scales: {
+                        xAxes: [ {
+                            display: true,
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: false,
+                                labelString: 'Month'
+                            }
+                                } ],
+                        yAxes: [ {
+                            display: true,
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Value'
+                            }
+                                } ]
+                    },
+                    title: {
+                        display: false,
+                        text: 'Normal Legend'
+                    }
+                }
+            } );
+
+        
+            var piedata = [
+                { label: "Desktop visits", data: [[1,32]], color: '#5c6bc0'},
+                { label: "Tab visits", data: [[1,33]], color: '#ef5350'},
+                { label: "Mobile visits", data: [[1,35]], color: '#66bb6a'}
+            ];
+
+
+             //single bar chart
+
+            var ctx = document.getElementById( "singelBarChart" );
+            ctx.height = 170;
+            var myChart = new Chart( ctx, {
+                type: 'bar',
+                data: {
+                    labels: [ {% for i in catfilterkey %}'{{i}}',{% endfor %} ],
+                    datasets: [
+                        {
+                            label: "Category data",
+                            data: {{catfilterval}},
+                            borderColor: "rgba(0, 194, 146, 0.9)",
+                            borderWidth: "0",
+                            backgroundColor: "rgba(0, 194, 146, 0.5)"
+                                    }
+                                ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [ {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                                        } ]
+                    }
+                }
+            } );
+             //doughut chart
+            var ctx = document.getElementById( "doughutChart" );
+            ctx.height = 170;
+            var myChart = new Chart( ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [ {
+                        data: [ {{wallet}},{{RazorPay}},{{Cod}} ],
+                        backgroundColor: [
+                                            "rgba(0, 194, 146,0.9)",
+                                            "rgba(0, 194, 146,0.7)",
+                                            "rgba(0, 194, 146,0.5)",
+                                        ],
+                        hoverBackgroundColor: [
+                                            "rgba(0, 194, 146,0.9)",
+                                            "rgba(0, 194, 146,0.7)",
+                                            "rgba(0, 194, 146,0.5)",
+                                        ]
+
+                                    } ],
+                    labels: [
+                                    "Wallet",
+                                    "RazorPay",
+                                    "Cash On Delivery",
+                                ]
+                },
+                options: {
+                    responsive: true
+                }
+            } );
+                
+        });
+    </script>
+    <script>
+        function changeTimeRange(range) {
+            // Add logic here to update the chart data based on the selected time range
+            console.log("Selected Time Range: " + range);
+        }
+    </script>
+    <script>
+        jQuery(document).ready(function($) {
+            "use strict";
+    
+            // ... (your existing chart initialization code)
+    
+            function changeTimeRange(range, buttonId) {
+                // Update the text of the clicked button
+                var buttonText = $('#' + buttonId).text(range);
+    
+                // Add logic here to update the chart data based on the selected time range
+                console.log("Selected Time Range: " + range);
+            }
+    
+            // Attach the click event handlers to the dropdown items
+            $('#button1 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button1');
+            });
+    
+            $('#button2 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button2');
+            });
+            $('#button3 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button3');
+            });
+    
+            $('#button4 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button4');
+            });
+    
+            $('#button5 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button5');
+            });
+
+            $('#button6 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button6');
+            });
+            $('#button7 + .dropdown-menu a').click(function() {
+                changeTimeRange($(this).text(), 'button7');
+            });
+        });
+    </script>
+{%endblock%}

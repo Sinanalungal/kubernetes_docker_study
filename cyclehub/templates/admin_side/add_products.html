@@ -1,0 +1,183 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content3 %}class='active'{% endblock %}
+{% block content %}
+<div class="breadcrumbs ">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1><strong>Add Products</strong></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Add Products</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn row">
+        <div class="col-lg-10">
+            <form id="productForm" method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" id="productName" name="productname" placeholder='Product Name'
+                        required>
+                    <div class="text-danger position-absolute mt-1" id='productname-error'
+                        style="margin:0; color: red; font-size: 10px;">{% if messages %}{%for i in messages%}{{i}}{%endfor%}{%endif %}</div>
+                </div>
+
+                <div class="form-group block ">
+                    <select class="form-control mt-1" id="brand" name="brand" placeholder='Brand' required>
+                        <option value="" disabled selected>Select a brand</option>
+                        {% for i in b %}
+                        <option value={{i.id}}>{{i.brand_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-danger position-absolute" style="margin:0; color: red;font-size: 10px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <select class="form-control" id="category" name="category" placeholder='Category' required>
+                        <option value="" disabled selected>Select a Category</option>
+                        {% for i in c %}
+                        <option value={{i.id}}>{{i.category_name}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-danger position-absolute" style="margin:0; color: red;font-size: 10px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <textarea class="form-control" id="description" name="description" rows="4"
+                        placeholder='Description'></textarea>
+                    <div class="text-danger position-absolute" style="margin:0; color: red;font-size: 10px;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="additionalImages">Upload Images (minimum 4):</label>
+                    <input type="file" class="form-control-file" id="additionalImages" name="images" accept="image/*"
+                        multiple>
+                    <div class="text-danger position-absolute" id='images-error'
+                        style="margin: 0; color: red; font-size: 10px;"></div>
+                </div>
+
+                <button type="submit" class="btn mt-3"
+                    style='border-radius:15px;background-color:#1d4289;color:white;'>Add Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script
+  src="https://code.jquery.com/jquery-3.6.4.min.js"
+  integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+  crossorigin="anonymous"
+></script>
+
+<script>
+    $(document).ready(function () {
+        
+        function isProductNameValid(productName) {
+            if (productName.length < 3) {
+                $('#productname-error').text('Product name should be at least 3 characters.');
+                
+                return false;
+            } else {
+                $('#productname-error').text('');
+            }
+
+            if (/ {2,}/.test(productName)) {
+                $('#productname-error').text('Product name should not have 2 consecutive spaces.');
+                return false;
+            } else {
+                $('#productname-error').text('');
+            }
+
+            if (/[^a-zA-Z0-9\s]/.test(productName)) {
+                $('#productname-error').text('Product name should not have special characters.');
+                return false;
+            } else {
+                $('#productname-error').text('');
+            }
+
+            if (/(\w)\1{2,}/.test(productName)) {
+                $('#productname-error').text('Product name should not have repeated characters.');
+                return false;
+            } else {
+                $('#productname-error').text('');
+            }
+
+            if (!/^[a-zA-Z]/.test(productName)) {
+                $('#productname-error').text('Product name should start with an alphabetic character.');
+                return false;
+            } else {
+                $('#productname-error').text('');
+            }
+
+            return true;
+        }
+
+        function isBrandSelected() {
+            var brand = $('#brand').val();
+            if (brand === '') {
+                $('#brand-error').text('Please select a brand.');
+                return false;
+            } else {
+                $('#brand-error').text('');
+                return true;
+            }
+        }
+
+        function isCategorySelected() {
+            var category = $('#category').val();
+            if (category === '') {
+                $('#category-error').text('Please select a category.');
+                return false;
+            } else {
+                $('#category-error').text('');
+                return true;
+            }
+        }
+
+        function updateProductNameError() {
+            var productName = $('#productName').val();
+            isProductNameValid(productName);
+        }
+
+       
+        $('#productName').on('input', function () {
+            updateProductNameError();
+        });
+
+        $('#brand').on('change', function () {
+            updateBrandError();
+        });
+
+        $('#category').on('change', function () {
+            updateCategoryError();
+        });
+
+        $('#productForm').on('submit', function (e) {
+            var productName = $('#productName').val();
+            var brandValid = isBrandSelected();
+            var categoryValid = isCategorySelected();
+
+            if (!isProductNameValid(productName) || !brandValid || !categoryValid) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,228 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+   
+        .button-31 {
+        background-color: #222;
+        border-radius: 4px;
+        border-style: none;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        display: inline-block;
+        font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.5;
+        margin: 0;
+        max-width: none;
+        min-height: 44px;
+        min-width: 10px;
+        outline: none;
+        overflow: hidden;
+        padding: 9px 20px 8px;
+        position: relative;
+        text-align: center;
+        text-transform: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        
+        }
+
+        .button-31:hover,
+        .button-31:focus {
+        opacity: .75;
+        }
+        body {
+            font-family: 'Verdana, Geneva, sans-serif';
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+       
+
+        .logo {
+            width: 200px;
+            height: 80px;
+        }
+
+        .scrollable-table {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row logo-row">
+            <div class="col-12">
+                <img src="{% static 'admin_side/images/transparent background.png' %}" alt="Shop Logo"
+                    class="logo">
+            </div>
+        </div>
+        <div class='p-3'>
+            <div>
+                <h1 class="mt-3" style='font-size:25px;'><strong>Bill Details:</strong></h1>
+            </div>
+
+            <div>
+                <table class="table" style='font-size:12px;'>
+                    <tr>
+                        <td style="font-weight: 600; font-size: 15px;color:grey;">
+                            Invoice Number: <span style='color:black;'>{{latest_order.order_id|title}}</span>
+                        </td>
+                        <td style="font-weight: 600; font-size: 15px;color:grey;">
+                            Ordered Date:<span style='color:black;'>{{latest_order.order_date}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; font-size: 15px;color:grey;">
+                            Payment Method: <span style='color:black;'>{{latest_order.payment_method}}</span>
+                        </td>
+                        <td style="font-weight: 600; font-size: 15px;color:grey;">
+                            Expected Delivery Date:<span
+                                style='color:black;'>{{latest_order.expected_delivery}}</span>
+                        </td>
+
+                    </tr>
+
+                </table>
+            </div>
+
+            <div>
+                <h2 style='font-size:25px;'><strong>Seller</strong></h2>
+            </div>
+
+                <table class="table table-bordered" width="100%">
+
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Name</b>
+                    </td>
+                    <td>
+                        Cycle Hub
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Address </b>
+                    </td>
+                    <td>
+                        Main road, Tirur,<br> Malappuram,Kerala<br>Pin:676301
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Email</b>
+                    </td>
+                    <td>
+                        cyclehub578@gmail.com
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Phone</b>
+                    </td>
+                    <td>
+                        +91 9087654321
+                    </td>
+                </tr>
+                </table>
+
+            <div>
+                <h2 style='font-size:25px;'><strong>Buyer</strong></h2>
+            </div>
+
+                <table class="table table-bordered" width="100%">
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Name</b>
+                    </td>
+                    <td>
+                        {{latest_order.address.full_name}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Address </b>
+                    </td>
+                    <td>
+                        {{latest_order.address.address}}<br>{{latest_order.address.city}},
+                        {{latest_order.address.state}}<br>{{latest_order.address.pincode}}
+
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 400; font-size: 14px;color:grey;">
+                        <b>Phone</b>
+                    </td>
+                    <td>
+                        {{latest_order.address.phone_number}}
+                    </td>
+                </tr>
+            </table>
+
+                <table class="table table-bordered" width="100%">
+
+                <thead style="font-weight: 600; font-size: 13px;">
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Tyre Size</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Status</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in latest_order.ordered_items.all %}
+                    <tr style='font-size: 14px;'>
+
+                        <td class="align-middle">{{ i.tyrevariant.product_id.product_name|title }}</td>
+                        <td class="align-middle">{{ i.tyrevariant.tyre_size }}</td>
+                        <td class="align-middle">₹{{ i.tyrevariant.offer_price }}</td>
+                        <td class="align-middle">{{ i.quantity }}</td>
+                        <td class="align-middle">₹{{ i.price }}</td>
+                        <td class="align-middle">{{ i.status }}</td>
+
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td style="font-weight: 600; font-size: 13px;" colspan="4" class="text-center">Grand Total:</td>
+                        <td style="font-weight: 600; font-size: 13px;" colspan="2"
+                            class="text-center">₹{{latest_order.remainingbalance}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class='d-flex  justify-content-end'>
+                <button onclick="window.print()" class="button-31 bg-secondary" role="button">Download Invoice</button>
+            </div>
+        </div>
+        
+
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

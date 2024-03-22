@@ -1,0 +1,101 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content11 %}class='active'{%endblock%}
+{% block content %}
+<title>Offers</title>
+<style>
+    body {
+        font-family: 'Lato', sans-serif;
+        
+    }
+.starter-template {
+        padding: 80px 15px;
+        text-align: center;
+    }
+
+    span.lower-text {
+        color: #ffc300;
+        font-size: 25px;
+        display: block;
+    }
+    
+    .hover-div {
+        padding: 20px 20px;
+        text-align: center;
+        min-height: 280px;
+    }
+    
+    .hover-div {
+        border-top: 1px solid #f8f8f8;
+        background: #f8f8f8;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        margin: 10px 0px;
+    }
+    
+    .hover-div:hover {
+        -webkit-transform: translateY(-20px);
+        -ms-transform: translateY(-20px);
+        transform: translateY(-20px);
+        box-shadow: 0 22px 43px rgba(0, 0, 0, 0.32);
+        cursor: pointer;
+        border-radius: 5px;
+    }
+</style>
+<div class="breadcrumbs mb-5">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1><strong>OFFERS</strong></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Offers</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+          <div class="starter-template">
+              <div class="row">
+                  <div class="col-sm-6">
+                      <a href='{% url 'product_offer' %}'><section class="hover-div"> <img class='mt-3' src="{% static 'admin_side/images/package.png' %}" width="100">
+                          <div class="hover-div_inner mt-5">
+                              <h3 ><strong>Product Offer</strong></h3>
+                              
+                          </div>
+                      </section></a>
+                  </div>
+                  <div class="col-sm-6">
+                    <a href='{% url 'category_offer' %}'><section class="hover-div"> <img class='mt-3' src="{% static 'admin_side/images/category.png' %}" width="100">
+                          <div class="hover-div_inner mt-5">
+                              <h3><strong>Category Offer</strong></h3> 
+                          </div>
+                      </section></a>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+<script>
+    $(document).ready(function () {
+        $('.hover-div').hover(function () {
+            $('.hover-div').stop().fadeTo('fast', 0.3);
+            $(this).stop().fadeTo('fast', 1);
+        }, function () {
+            $('.hover-div').stop().fadeTo('fast', 1);
+        });
+    });
+</script>
+{%endblock%}

@@ -1,0 +1,269 @@
+{% extends "user_side/base.html" %}
+{% load static %}
+{% block content1 %}<link href="{% static 'user_side/css/product.css'%}" rel="stylesheet">
+<style>
+	.active{
+		background-color:#1d4289!important;
+		color:white;
+	}
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+   
+  
+  <section id="prod_pg" class=" pb-4 bg_light_1">
+	<div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center '><strong>PRODUCTS</strong></div>
+   <div class="container-fluid ">
+	<div class="row prod_pg1 ">
+	   <div class="col-md-12 col-lg-3">
+		<div class="prod_pg1l row">
+			<form method="GET" action="">
+			<div class="prod_pg1l1 bg-white p-4">
+				<h6 class="mb-3">PRODUCT CATEGORIES</h6>
+				<div class="prod_pg1l1i row">
+					<div class="col-md-10 col-10">
+					 <div class="prod_pg1l1il">
+					   <h6 class="font_14 fw-normal mt-1"><input type="radio"  name="categories_id" value="0" id="category_radio_0"  checked> All Categories</a></h6>
+					 </div>
+					</div>
+					<div class="col-md-2 col-2">
+					 <div class="prod_pg1l1ir text-end">
+					 </div>
+					</div>
+				   </div>
+				{% for i in s %}
+				<div class="prod_pg1l1i row">
+				 <div class="col-md-10 col-10">
+				  <div class="prod_pg1l1il">
+					<h6 class="font_14 fw-normal mt-1"><input type="radio" name="categories_id" value="{{i.id}}" id="category_radio_{{ i.id }}"> {{ i.category_name |title}} </a></h6>
+				  </div>
+				 </div>
+				 <div class="col-md-2 col-2">
+				  <div class="prod_pg1l1ir text-end">
+				  </div>
+				 </div>
+				</div>
+				{% endfor %}
+				<h6 class="mb-2 mt-3">PRODUCT BRAND</h6>
+
+				<div class="prod_pg1l1il">
+					<div >
+						<h6 class="font_14 fw-normal mb-0  col-lg-12 col-md-6  col-sm-6 "><input type="radio"  name="brand_id" value="0" id='brand_radio_0'> All Brands</a></h6>
+	
+						{% for k in b %}
+						
+						<h6 class="font_14 fw-normal mb-0 mt-3 col-lg-12 col-md-6  col-sm-6"><input type="radio"  name="brand_id" value="{{k.id}}" id='brand_radio_{{k.id}}'> {{k.brand_name|title}}</a></h6>
+						{% endfor %}
+					</div>
+				
+				</div>
+				<div class="prod_pg1l1 bg-white mt-4">
+					<h6 class="mb-3">FILTER BY PRICE</h6>
+					<label for="price_range">Price Range <span style='font-size:11px;'>(₹0-₹20000)</span>:</label>
+					<input type="range" class="form-range" id="price_range" name="price_range" value="100">
+					<span id="selected_price" class="mb-0 col_light font_13 mt-3">PRICE: ₹5000 - ₹20000</span>
+				</div>
+				<div class="prod_pg1l1 bg-white  mt-4">
+				
+				<button type='submit' id="getSelectedValueButton" style='background-color:#1d4289;color:white;padding:8px;border:none;'>Get Products</button>
+			  </div>
+			  </div>
+		</form>
+
+		 
+		</div>
+		
+	   </div>
+	
+	   <div class="col-md-12 col-lg-9">
+		<div class="prod_pg1r">
+		  <div class="prod_pg1r1 row">
+			<div class="col-md-9">
+
+			</div>
+
+		  </div>
+
+		  
+		  <div class="prod_pg1r2 mt-4 row ">
+			
+			{% for i in k %}
+		 
+			{%if i.category_id.is_listed and i.brand_id.is_listed %}
+			
+		  <div class="col-md-4">
+		   <div class="prodinm clearfix " style='box-shadow: 0 0 5px white; '>
+			 <div class="prod_2im position-relative clearfix">
+		  <div class="prod_2i1 clearfix ">
+			<div class="grid clearfix">
+				<figure class="effect-jazz mb-0" >
+				  <a href="../../product_detail/{{i.id}}"><img src='{{i.images_set.first.image.url}}' class="w-100" alt="abc"></a>
+				</figure>
+			</div>
+		  </div>
+	
+		  <div class="prod_2i3 clearfix position-absolute w-100">
+			<h6 class=" d-inline-block pt-1 pb-1 font_13 text-white ps-3 pe-3 pull-right" style='background-color:#1d4289;'>40%</h6>
+		  </div>
+		  <div class="prod_2in clearfix position-absolute bg-light w-100 p-3 text-center">
+		   <ul class="mb-0">
+			<li class="d-inline-block"><a href="../../product_detail/{{i.id}}"><i class="fa fa-eye"></i></a></li>
+		   </ul>
+		  </div>
+		  </div>
+			 <div class="prod_2i2 pt-4 pb-4 ps-3 pe-3 bg-white clearfix">
+			 <span class="col_yell">
+			   <i class="fa fa-star"></i>
+			   <i class="fa fa-star"></i>
+			   <i class="fa fa-star"></i>
+			   <i class="fa fa-star"></i>
+			   <i class="fa fa-star-half-o"></i>
+			  </span>
+		  <h6 class="mt-2"><a href="product_detail/{{i.id}}">{{i.product_name|title}}</a></h6>
+		  <h6 class="font_13 "><a class="col_light" style='font-size:11px; color:grey;' href="#">{{i.brand_id.brand_name|title}}</a></h6>
+		  <h6 class="font_13"><a class="col_light" style='font-size:11px; color:grey;' href="#">{{i.category_id.category_name|title}}</a></h6>
+
+		  <hr>
+		  {% if i.category_id.category_offer == 0 and i.product_offer == 0%}
+		  {% comment %} <h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.offer_price}}</span>&nbsp;<span style='font-size:12px;color:red;' class="text-decoration-line-through pull-right"><strong>₹{{i.tyresize_set.first.price}}</strong></span> </h6> {% endcomment %}
+		  <h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.price}}</span><!-- Inside the loop where you display products -->
+			<span class="favorite-icon pull-right fw-bold  " data-product-id='{{i.id}}'><i class="fa-solid fa-heart"></i></span>
+			</h6>
+		  {% else %}
+		  	<h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.offer_price}}</span>&nbsp;<span style='font-size:12px;color:red;' class="text-decoration-line-through "><strong>₹{{i.tyresize_set.first.price}}</strong></span><span class="favorite-icon pull-right fw-bold  " data-product-id='{{i.id}}'><i class="fa-solid fa-heart"></i></span></h6>
+          {%endif%}
+		</div>
+		   </div>
+		  </div>
+		  {%endif%}
+		
+		  {% endfor %}
+		  
+		  
+		 
+		  
+		</div>
+		<div class="pages mt-4 row text-center bg_transparent ms-0 me-0 pt-4 pb-4 ">
+			<div class="col-md-12 d-flex align-items-end justify-content-center">
+				<ul class="pagination mb-0">
+					{% if k.has_previous %}
+						<li><a href="?page={{ k.previous_page_number }}">&laquo;</a></li>
+					{% endif %}
+		
+					{% for i in k.paginator.page_range %}
+						{% if k.number == i %}
+							<li class="active"><span>{{ i }}</span></li>
+						{% else %}
+							<li><a href="?page={{ i }}">{{ i }}</a></li>
+						{% endif %}
+					{% endfor %}
+		
+					{% if k.has_next %}
+						<li><a href="?page={{ k.next_page_number }}">&raquo;</a></li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		</div>
+	   </div>
+	</div>
+   </div>
+  </section>
+{% endblock %}
+
+{% block content2 %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+	$(document).ready(function () {
+		$(document).on('click', '.favorite-icon', function () {
+			const clickedIcon = $(this);
+			const productID = clickedIcon.data('product-id');
+			const isFavorite = clickedIcon.hasClass('fas');
+	
+			// Make AJAX request
+			$.ajax({
+				type: 'POST',
+				url: '../../wishlist_toggle/',
+				data: {
+					'product_id': productID,
+					'action': 'add',  // Set the action to 'add' to indicate adding to the wishlist
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				success: function (data) {
+					if (data.success) {
+						
+						Swal.fire({
+							title: "Success",
+							text: "Product added to Wishlist",
+							icon: "success"
+						});
+					} else {
+						Swal.fire({
+							title: "error",
+							text: data.message,
+							icon: "error"
+						});
+					}
+				},
+				error: function (xhr, errmsg, err) {
+					console.log('Error adding to wishlist', xhr.responseText);
+				}
+			});
+		});
+	});
+	
+</script>
+<script>
+  $(document).ready(function() {
+    $('.favorite-icon').on('click', function() {
+      $(this).find('.far').toggleClass('fas');
+    });
+  });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Extract the category, brand, and price range from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryID = urlParams.get('categories_id');
+        const brandID = urlParams.get('brand_id');
+        const priceRange = urlParams.get('price_range');
+
+        // Check if categoryID, brandID, and priceRange are not null
+        if (categoryID !== null) {
+            // Find and select the corresponding category radio button
+            const categoryRadio = document.getElementById(`category_radio_${categoryID}`);
+            if (categoryRadio) {
+                categoryRadio.checked = true;
+            }
+        }
+
+        if (brandID !== null) {
+            // Find and select the corresponding brand radio button
+            const brandRadio = document.getElementById(`brand_radio_${brandID}`);
+            if (brandRadio) {
+                brandRadio.checked = true;
+            }
+        }
+
+        if (priceRange !== null) {
+            // Find and set the last selected price range
+            const priceRangeInput = document.getElementById('price_range');
+            const selectedPrice = document.getElementById('selected_price');
+            
+            priceRangeInput.value = priceRange;
+            selectedPrice.textContent = `PRICE: ₹${priceRange*(20000/100)}`;
+        }
+    });
+    
+</script>
+
+
+{% endblock %}
+
+
+

@@ -1,0 +1,48 @@
+{% extends 'user_side/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Order Details</h2>
+    <div class="row">
+        <div class="col-md-5">
+            <p><strong>Order ID:</strong> {{ order.first.order.order_id }}</p>
+            <p><strong>Total Amount:</strong> ₹{{ order.first.order.fullproducttotal }}</p>
+            <p><strong>Payment Status:</strong> {{ order.first.order.payment_status }}</p>
+            <p><strong>Order Date:</strong> {{ order.first.order.order_date }}</p>
+            <p><strong>Expected Date:</strong> {{ order.first.order.expected_delivery }}</p>
+        </div>
+            <h4 class="mb-3">Ordered Items</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Tyre Size</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ordered_item in order %}
+                            <tr>
+                                <td><img src="{{ ordered_item.tyrevariant.product_id.images_set.first.image.url }}" height="90px"></td>
+                                <td>{{ ordered_item.tyrevariant.product_id.product_name }}</td>
+                                <td>{{ ordered_item.tyrevariant.tyre_size }}</td>
+                                <td>₹{{ ordered_item.tyrevariant.price }}</td>
+                                <td>{{ ordered_item.quantity }}</td>
+                                <td>₹{{ ordered_item.price }}</td>
+                                <td>
+                                    <a class="btn btn-danger btn-sm" href="">Cancel</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

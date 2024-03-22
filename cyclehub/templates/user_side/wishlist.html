@@ -1,0 +1,140 @@
+{% extends 'user_side/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% block content1 %}
+        <link href="{% static 'user_side/css/cart.css' %}" rel="stylesheet">
+		<style>
+			#cart_page {
+				min-height: 500px; 
+			}
+		</style>
+        <!-- Include jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Include Popper.js -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.10.2/umd/popper.min.js"></script>
+
+        <!-- Include Bootstrap JavaScript -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    {% endblock %}
+
+    <div style="background-color: #1d4289; height: 70px; width: 100%; color: white; font-size: 30px;"
+         class="d-flex align-items-center justify-content-center mb-5">
+        <strong>WISHLIST</strong>
+    </div>
+
+    <section id="cart_page" class="cart pt-4 pb-4">
+        <div class="container-xl">
+            <div class="cart_2 row">
+                <div class="col-md-6">
+                </div>
+            </div>
+
+            <div class="cart_3 row mt-3">
+                {% if wishlist %}
+                {% for i in wishlist %}
+                    <div class="theproductdiv col-md-8">
+                        <div class="cart_3l1 mt-3 row ms-0 me-0">
+                            <div class="col-md-3 ps-0 col-3">
+                                <div class="cart_3l1i">
+                                    <a href="#"><img src="{{ i.product.images_set.first.image.url }}" alt="abc"
+                                                     class="w-100"></a>
+                                </div>
+                            </div>
+                            <div class="col-md-9 col-9 row">
+                                <div class="cart_3l1i1">
+                                    <h6 class="fw-bold"><a href="#">{{ i.product.product_name }}</a></h6>
+                                    <h6 class="font_12 mt-3">{{ i.product.category_id.category_name }}</h6>
+                                    <h5 class="col_yell mt-4">{{ i.product.tyresize_set.first.offer_price }}</h5>
+                                </div>
+                                <div class="cart_3l1i2 mt-5">
+                                    <h6><a class="button_1" href="../../product_detail/{{ i.product.id }}">VIEW PRODUCT</a></h6>
+                                    <h6 style='cursor:pointer;'>
+                                        <a class="button_1 remove-from-wishlist"
+                                           data-product-id="{{ i.product.id }}">REMOVE</a>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {%else%}
+                <div
+                id="noproduct"
+                class="col-md-12 d-flex align-items-center justify-content-center"
+                style="height: 400px; width: 100%;" 
+              >
+                <img src={% static 'user_side/img/Frame 1.jpg' %}>
+              </div>
+              {%endif%}
+            </div>
+        </div>
+    </section>
+
+
+ 
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".remove-from-wishlist").on("click", function (e) {
+                e.preventDefault();
+    
+                var productId = $(this).data("product-id");
+    
+                var removedItem = $(this).closest('.theproductdiv');
+    
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'remove_from_wishlist' %}",
+                            data: {
+                                product_id: productId,
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                            },
+                            success: function (data) {
+    
+                                Swal.fire({
+                                    title: "Success",
+                                    text: data.message,
+                                    icon: "success"
+                                });
+    
+                                removedItem.remove();
+    
+                                if ($('.theproductdiv').length === 0) {
+                                    $("#noproduct").show();
+                                }
+    
+                            },
+                            error: function (data) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: data.message,
+                                    icon: "error"
+                                });
+                            },
+                        });
+                    }
+                });
+            });
+    
+            if ($('.theproductdiv').length === 0) {
+                $("#noproduct").show();
+            }
+        });
+    </script>
+{% endblock %}

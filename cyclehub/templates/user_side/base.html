@@ -1,0 +1,382 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Cycle Hub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">	<link href={% static 'user_side/css/font-awesome.min.css'%} rel="stylesheet" >
+	<link href="{% static 'user_side/css/global.css'%}" rel="stylesheet"/>
+	<link href="{% static 'user_side/css/index.css'%}" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  {% block content1 %}{% endblock %}
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@500&family=Noto+Sans+JP&display=swap');
+    body{
+      font-family: 'Inconsolata', monospace;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    #header_top {
+      background-color: #ffffff; /* Set your desired background color */
+      padding: 10px; /* Adjust the padding based on your design */
+      position: sticky!important;
+      top: 0;
+      z-index: 100;
+    }
+    .email-input-container {
+      display: flex;
+      align-items: center;
+  }
+  .navbar-nav li a {
+    color:white!important;
+  }
+  
+  .email-input {
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      outline: none;
+  }
+  
+  .search-button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+       /* Add some space between the input and button */
+       widt:50px;
+  }
+  ul.main-menu li.active-menu a {
+    color: #094FB6; /* Change this to your desired color */
+}
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-white bg-white fixed-top second ">
+        <div class="container-fluid ">
+            
+                <div class="col-md-2 col-6">
+                  <div class="header_top1l ">
+                    <a href="{% url 'homepage' %}"><img src="{% static 'user_side/img/transparent background.png' %}" alt="IMG-LOGO" style="max-width: 150px; height: auto;"></a>
+                  </div>
+                </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+          </button>
+          <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  
+                  <a class="nav-link " aria-current="page" href="{% url 'homepage' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../shop/?categories_id=0&brand_id=0&price_range=100">Shop</a>
+                </li>
+                
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Categories
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="../../shop/?categories_id=0&brand_id=0&price_range=100">All Categories</a></li>
+                    {% for i in s%}
+                    <li><a class="dropdown-item" href="../../shop/?categories_id={{i.id}}&brand_id=0&price_range=100">{{i.category_name|title}}</a></li>
+                    {%endfor%}
+
+                  </ul>
+                </li>
+                
+                {%if request.user.is_authenticated %}
+                {%if request.user.is_superuser%}
+                <li class="nav-item">
+                  <a class="nav-link" href="../../dashboard?sale=Week&first=Total">Admin Dashboard</a>
+                </li>
+                {%else%}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'wishlist'  %}">Wishlist</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'cart'  %}">Cart</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'wallet' %}">Wallet</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'userprofile' %}">User Profile</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'order_page' %}">My Orders</a>
+                </li>
+                {%endif%}
+                {%endif%}
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'contact'  %}">Contact</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'about'  %}">About</a>
+                </li>
+                {%if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="../../logoutt">Logout</a>
+                </li>
+                {%else%}
+                <li class="nav-item">
+                  <a class="nav-link" href="../../login">Login</a>
+                </li>
+                {%endif%}
+              </ul>
+             
+            </div>
+          </div>
+        </div>
+      </nav>
+    </section>
+    <section id="header_top" class="pt-2 pb-2 first">
+        <div class="container-fluid ">
+          <div class="row header_top1">
+            <div class="col-md-2 col-6">
+              <div class="header_top1l">
+                <a href="{% url 'homepage' %}"><img src={% static 'user_side/img/transparent background.png' %} alt="IMG-LOGO" style="max-width: 200px; height: auto;"></a>
+              </div>
+            </div>
+      
+            <nav class="col-md-4 mt-2  ps-5" >
+              <div class="container-fluid linksof ">
+                <ul class="main-menu">
+                    
+                    <li class="{% if request.resolver_match.url_name == 'homepage' %}active-menu{% endif %}">
+                        <a href="{% url 'homepage' %}"><strong>Home</strong></a>
+                        
+                    </li>
+    
+                    <li class="{% if request.resolver_match.url_name == 'shop' %}active-menu{% endif %}">
+                        <a href="../shop/?categories_id=0&brand_id=0&price_range=100"><strong>Shop</strong></a>
+                    </li>
+                    <li class="nav-item dropdown label1 " data-label1="hot">
+                        <a class="nav-link dropdown-toggle" href="shoping-cart.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <strong>Categories</strong>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-white">
+                          <li><a class="dropdown-item" href="../../shop/?categories_id=0&brand_id=0&price_range=100">All Categories</a></li>
+                          {% for i in s%}
+                          <li><a class="dropdown-item" href="../../shop/?categories_id={{i.id}}&brand_id=0&price_range=100">{{i.category_name|title}}</a></li>
+                          {%endfor%}
+                   
+                        </ul>
+                      </li>
+
+                    <li class="{% if request.resolver_match.url_name == 'contact' %}active-menu{% endif %}">
+                        <a href="{% url 'contact' %}"><strong>Contact</strong></a>
+                    </li>
+    
+                    <li class="{% if request.resolver_match.url_name == 'about' %}active-menu{% endif %}">
+                        <a href="{% url 'about' %}"><strong>About</strong></a>
+                    </li>
+    
+
+                </ul>
+            </nav>
+          
+            
+            
+            <div class="col-md-6 mt-3 col-6">
+              <div class="header_top1r pull-right">
+                <ul class="mb-0">
+                  <li class="nav-item d-inline-block me-4">
+                    <form method='GET' action="{% url 'search' %}" onsubmit="return validateSearchForm()">
+                      <div class="search-container searchremove">
+                        <input type="text" id="searchInput" placeholder="Search" class="search-input" name='search'>
+                          <input type="hidden" name="categories_id" id="search_categories_id" value="{{ request.GET.categories_id }}">
+                          <input type="hidden" name="brand_id" id="search_brand_id" value="{{ request.GET.brand_id }}">
+                          <input type="hidden" name="price_range" id="search_price_range" value="{{ request.GET.price_range }}">
+                          <button style='background-color: lightgrey; color: black; border-radius: 0 4px 4px 0;' type="submit" class="search-button">
+                              <i class="fa-solid fa-magnifying-glass"></i>
+                          </button>
+                      </div>
+                    </form>
+                  
+                  </li>
+                  
+                  
+                  
+                  {% if request.user.is_superuser %}
+                  <li class="nav-item d-inline-block ms-2 me-2">
+                    <a href="../../dashboard?sale=Week&first=Total"><svg xmlns="http://www.w3.org/2000/svg" height="1.4em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z"/></svg></a>
+                  </li>
+                  {%else%}
+                  <li class="nav-item d-inline-block me-4">
+                    <a href="{% url 'wishlist' %}"><svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg></a>
+                  </li>
+                  <li class="nav-item d-inline-block me-2">
+                    <a href="{% url 'cart' %}"><svg xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></i> </a>
+                  </li>
+                  {% endif %}
+                  
+                  {% if user.is_authenticated %}
+                  {% if request.user.is_superuser %}
+                  <li class="nav-item dropdown d-inline-block mx-1">
+                    <a class="dropdown-toggle col_dark nav_hide"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Admin
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-white mt-3">
+                    
+                      <li><a class="dropdown-item" href="../../logoutt"> &nbsp;<i class="fa-solid fa-right-from-bracket"></i> &nbsp; Logout</a></li>
+                    </ul>
+                    
+                    {% else %}
+                  <li class="nav-item dropdown d-inline-block mx-1">
+                    <a class="dropdown-toggle col_dark nav_hide"  id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {{user.full_name}}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-white mt-3">
+                      <li><a class="dropdown-item" href="{% url 'userprofile' %}"> &nbsp;<i class="fa-solid fa-user"></i> &nbsp; Profile</a></li>
+                      <li><a class="dropdown-item" href="{% url 'wallet' %}"> &nbsp;<i class="fa-solid fa-wallet"></i></i> &nbsp; Wallet</a></li>
+                      <li><a class="dropdown-item" href="{% url 'order_page' %}"> &nbsp;<i class="fa-solid fa-bag-shopping"></i> &nbsp; My Orders</a></li>
+                      <li><a class="dropdown-item" href="../../logoutt"> &nbsp;<i class="fa-solid fa-right-from-bracket"></i> &nbsp; Logout</a></li>
+                    </ul>
+                    {%endif%}
+                    {% else %}
+                    <a class="dropdown-toggle col_dark nav_hide" href="../../login" id="navbarDropdown" role="button" aria-expanded="false">
+                      <span>Login</span>
+                    </a>
+                    {%  endif %}
+                  
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+    
+
+      {% block content %}{% endblock %}
+
+
+     <section id="subs" class="pt-3 pb-3 bg_blue" >
+    <div class="container-xl">
+        <div class="row subs_1 container">
+            <div class="col-md-6">
+                <div class="subs_1l">
+                    <span class="d-inline-block col_yell font_50 float-start me-3"><i style='color:White;' class="fa fa-envelope-o"></i></span>
+                    <h4 class="text-white mt-2" style='font-size:17px;'>GET UPDATES</h4>
+                    <p class="mb-0 text-light" style='font-size:10px;'>Stay in the loop with Cycle Hub</p>
+                </div>
+            </div>
+            <div class="col-md-6 mt-2">
+                <div class="subs_1r ">
+                    <div class="input-group">
+                        <input type="text" class="form-control border-0 bg-transparent" placeholder="Enter Your Email" />
+                        <span class="input-group-btn">
+                            <button style='background-color:white;color:black;' class="btn btn-primary  border-0 fs-6" type="button">
+                                SUBSCRIBE
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="footer" class="pt-4 pb-4 bg-light">
+    <div class="container-xl">
+        <div class="row footer_1 container">
+            <div class="col-md-4">
+                <div class="footer_1i">
+                    <img src={% static 'user_side/img/transparent background.png' %} class='img-fluid' style='width:300px;'>
+                    <p class="mt-3 text-dark" style='font-size:12px;'>Discover a world of premium bicycles, accessories, and gear tailored to cycling enthusiasts of all levels. Whether you're a casual rider, a fitness fanatic, or a seasoned cyclist, we've got the perfect ride for you.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mt-4">
+                <div class="footer_1i">
+                    <h5 class="fs-6 mb-4 text-dark"><strong>QUICK LINKS</strong></h5>
+                    <div class="row">
+                        <h6 class="font_14 fw-normal mb-3 col-md-12 col-6" style='font-size:12px;'><a href="#">Terms Of Use</a></h6>
+                        <h6 class="font_14 fw-normal mb-3 col-md-12 col-6"><a href="#" style='font-size:12px;'>Security</a></h6>
+                        <h6 class="font_14 fw-normal mb-3 col-md-12 col-6"><a href="#" style='font-size:12px;'>Privacy</a></h6>
+                        <h6 class="font_14 fw-normal mb-0 col-md-12 col-6"><a href="#" style='font-size:12px;'>Store Pickup</a></h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mt-4">
+                <div class="footer_1i">
+                    <h5 class="fs-6 mb-4 text-dark"><strong>CONTACT US</strong></h5>
+                    <div class="footer_1i1 row"style='font-size:12px;'>
+                        <div class="col-lg-1 col-md-2 col-1">
+                            <span class="col_yell fs-5"><i class="fa fa-map-marker"></i></span>
+                        </div>
+                        <div class="col-md-10 col-lg-11 col-11">
+                            <p class="mb-0 text-dark">Main road, Tirur, Malappuram, Kerala</p>
+                        </div>
+                    </div>
+                    <div class="footer_1i1 row mt-3"style='font-size:12px;'>
+                        <div class="col-lg-1 col-md-2 col-1">
+                            <span class="col_yell fs-5"><i class="fa fa-phone"></i></span>
+                        </div>
+                        <div class="col-md-10 col-lg-11 col-11">
+                            <p class="mb-0 text-dark">+91 9207400638</p>
+                        </div>
+                    </div>
+                    <div class="footer_1i1 row mt-3"style='font-size:12px;'>
+                        <div class="col-lg-1 col-md-2 col-1">
+                            <span class="col_yell fs-5"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <div class="col-md-10 col-lg-11 col-11">
+                            <p class="mb-0 text-dark">cyclehub578@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="footer_b" class="bg_blue">
+    <div class="container-xl">
+        <div class="row footer_b1 text-center">
+            <div class="col-md-12">
+                <p class="mb-2 text-light" style='font-size:12px;'>&copy; 2023 CycleHub Store. All Rights Reserved | Design by <a class="col_yell fw-bold">sinan_m_h_d</a></p> 
+                {% comment %} <p class="mb-0 text-light">Main road, Tirur, Malappuram, Kerala | +91 9087654321 | cyclehub@gmail.com</p> {% endcomment %}
+          </div>
+        </div>
+    </div>
+</section>
+
+    {% block content2 %}{% endblock %}
+    <script src="{%static 'user_side/js/script.js'%}">
+    
+    </script>
+<script>
+    function validateSearchForm() {
+        var searchInput = document.getElementById('searchInput').value.trim();
+
+        // Check if the search input is empty
+        if (searchInput === '') {
+            return false;
+        }
+
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Update hidden fields with the current values from the URL
+        document.getElementById('search_categories_id').value = urlParams.get('categories_id') || '0';
+        document.getElementById('search_brand_id').value = urlParams.get('brand_id') || '0';
+        document.getElementById('search_price_range').value = urlParams.get('price_range') || '100';
+    });
+</script>
+
+</body>

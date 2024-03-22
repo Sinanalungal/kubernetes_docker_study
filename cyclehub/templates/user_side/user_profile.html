@@ -1,0 +1,434 @@
+{% extends 'user_side/base.html' %}
+
+{%load static %}
+{% block content1 %}
+
+<link href="{% static 'user_side/css/user_profile.css'%}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+{% block content %}
+<div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center mb-5'><strong>USER PROFILE</strong></div>
+
+<div class="container light-style flex-grow-1 container-p-y mb-5">
+
+
+    <div class="card overflow-hidden">
+      <div class="row no-gutters row-bordered row-border-light">
+        <div class="col-md-3 pt-0">
+          <div class="list-group list-group-flush account-settings-links">
+            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-info">Manage Address</a>
+          </div>
+        </div>
+        <div class="col-md-9">
+          <div class="tab-content">
+            <div class="tab-pane fade active show" id="account-general">
+              <hr class="border-light m-0">
+              <form action="../../update_user" method='POST' id="updateUserFormdetail">
+                {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name='full_name' class="form-control mb-1" value="{{request.user.full_name|title}}" placeholder='Full Name'>
+                    <span class="error-name" style="color: red; font-size: 7px;"></span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="number" name="phone" pattern="[0-9]{10}" class="form-control" value="{{ request.user.phone_number }}" placeholder="Phone Number">
+                    <span class="error-phone" style="color: red; font-size: 7px;"></span>
+                </div>
+                
+                  <div class="form-group">
+                    <label class="form-label">E-mail</label>
+                    <input type="text" name='email' class="form-control mb-1" value="{{request.user.email}}" placeholder='Email' disabled>
+                  </div>
+                  <div class="text-right mt-3 mb-3">
+                    <button type="submit" class="btn btn "  style='background-color:#1d4289;color:white;'>Save changes</button>&nbsp;
+                  </div>
+                </form>
+
+              </div>
+
+            </div>
+            <div class="tab-pane fade" id="account-change-password">
+              <div class="card-body pb-2">
+                <form id="updateUserForm" action="../../update_password" method='POST'>
+                  {% csrf_token %}
+                <div class="form-group">
+                  <label class="form-label">Current password</label>
+                  <input type="password" name='current_password' class="form-control">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">New password</label>
+                  <input type="password" name='new_password' class="form-control">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Repeat new password</label>
+                  <input type="password" name='confirm_password' class="form-control">
+                </div>
+                <div class="text-right mt-3 mb-3">
+                  <button type="submit" class="btn btn" style='background-color:#1d4289;color:white;'>Save changes</button>&nbsp;                  {% comment %} <button type="button" class="btn btn-default">Cancel</button> {% endcomment %}
+                </div>
+              </form>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="account-info">
+              <div class="card-body pb-2">
+
+                <table class="table table-striped table-hover">
+                    <a href="#addEmployeeModal" class="btn btn-success mb-3" data-toggle="modal"><i class="fa-solid fa-plus"></i> <span>Add Address</span></a>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Pincode</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in addresses%}
+                        {% if i.is_listed %}
+                        <tr>
+
+                            <td>{{i.full_name}}</td>
+                            <td>{{i.phone_number}}</td>
+                            <td>{{i.address}}</td>
+                            <td>{{i.city}}</td>
+                            <td>{{i.state}}</td>
+                            <td>{{i.pincode}}</td>
+                            <td>
+                                <a href="#editEmployeeModal-{{forloop.counter}}" class="edit ms-2" data-toggle="modal"><i class="material-icons fa-solid fa-pen" data-toggle="tooltip" title="Edit"></i></a>  
+                            </td>
+                            <td>
+                               <a href="#deleteEmployeeModal-{{forloop.counter}}" class="delete ms-3" data-toggle="modal"><i style='color:red;' class="material-icons fa-solid fa-trash" data-toggle="tooltip" title="Delete"></i></a>
+                            </td>
+                            
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="account-social-links">
+              <div class="card-body pb-2">
+
+                <div class="form-group">
+                  <label class="form-label">Twitter</label>
+                  <input type="text" class="form-control" value="https://twitter.com/user">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Facebook</label>
+                  <input type="text" class="form-control" value="https://www.facebook.com/user">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Google+</label>
+                  <input type="text" class="form-control" value="">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">LinkedIn</label>
+                  <input type="text" class="form-control" value="">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Instagram</label>
+                  <input type="text" class="form-control" value="https://www.instagram.com/user">
+                </div>
+
+              </div>
+            </div>
+            <div class="tab-pane fade" id="account-connections">
+              <div class="card-body">
+                <button type="button" class="btn btn-twitter">Connect to <strong>Twitter</strong></button>
+              </div>
+              <hr class="border-light m-0">
+              <div class="card-body">
+                <h5 class="mb-2">
+                  <a href="javascript:void(0)" class="float-right text-muted text-tiny"><i class="ion ion-md-close"></i> Remove</a>
+                  <i class="ion ion-logo-google text-google"></i>
+                  You are connected to Google:
+                </h5>
+                nmaxwell@mail.com
+              </div>
+              <hr class="border-light m-0">
+              <div class="card-body">
+                <button type="button" class="btn btn-facebook">Connect to <strong>Facebook</strong></button>
+              </div>
+              <hr class="border-light m-0">
+              <div class="card-body">
+                <button type="button" class="btn btn-instagram">Connect to <strong>Instagram</strong></button>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="account-notifications">
+              <div class="card-body pb-2">
+
+                <h6 class="mb-4">Activity</h6>
+
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input" checked="">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">Email me when someone comments on my article</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input" checked="">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">Email me when someone answers on my forum thread</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">Email me when someone follows me</span>
+                  </label>
+                </div>
+              </div>
+              <hr class="border-light m-0">
+              <div class="card-body pb-2">
+
+                <h6 class="mb-4">Application</h6>
+
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input" checked="">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">News and announcements</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">Weekly product updates</span>
+                  </label>
+                </div>
+                <div class="form-group">
+                  <label class="switcher">
+                    <input type="checkbox" class="switcher-input" checked="">
+                    <span class="switcher-indicator">
+                      <span class="switcher-yes"></span>
+                      <span class="switcher-no"></span>
+                    </span>
+                    <span class="switcher-label">Weekly blog digest</span>
+                  </label>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} ------------modal------- {% endcomment %}
+    <div id="addEmployeeModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{% url 'add_address' %}" method='POST'>
+                   {% csrf_token %}
+                    <div class="modal-header">						
+                        <h4 class="modal-title">Add Address</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                   <div class="modal-body">					
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input name='full_name' type="text" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input name='phone_number' type="number" pattern="[0-9]{10}" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea name='address' class="form-control" required></textarea>   
+                        </div>
+                        <div class="form-group">
+                            <label>City</label>
+                            <input name='city' type="text"   class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                          <label>State</label>
+                          <input name='state' type="text"   class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                           <label>Pincode</label>
+                           <input name='pincode' class="form-control" type="text" required>	
+                        </div>
+                                       
+                   </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                        <input type="submit" style='background-color:#1d4289;color:white;' class="btn btn" value="Add">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+     <!-- Edit Modal HTML -->
+     {%for i in addresses%}
+     <div id="editEmployeeModal-{{forloop.counter}}" class="modal fade">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <form action="../../edit_address/{{i.id}}" method='POST'>
+                      {% csrf_token %}
+                     <div class="modal-header">						
+                         <h4 class="modal-title">Edit Address</h4>
+                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                     </div>
+                     <div class="modal-body">					
+                         <div class="form-group">
+                             <label>Full Name</label>
+                             <input name='full_name' value="{{i.full_name}}" type="text" class="form-control" required>
+                         </div>
+                         <div class="form-group">
+                          <label>Phone Number</label>
+                          <input name='phone_number' type="number" pattern="[0-9]{10}" value="{{i.phone_number}}" class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                          <label>Address</label>
+                          <textarea name='address' class="form-control" required>{{i.address}}</textarea>   
+                      </div>
+                      <div class="form-group">
+                          <label>City</label>
+                          <input name='city' type="text"  value="{{i.city}}" class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                        <label>State</label>
+                        <input name='state' type="text" value="{{i.state}}"  class="form-control" required>
+                      </div>
+                      <div class="form-group">
+                         <label>Pincode</label>
+                         <input name='pincode' class="form-control" value="{{i.pincode}}" type="text" required>	
+                      </div>					
+                     </div>
+                     <div class="modal-footer">
+                         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                         <input type="submit" class="btn btn" style='background-color:#1d4289;color:white;' value="update">
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
+     {% endfor %}
+    {%for i in addresses%}
+    <div id="deleteEmployeeModal-{{forloop.counter}}" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="../../delete_address/{{i.id}}" method='POST'>
+                   {% csrf_token %}
+                    <div class="modal-header">						
+                        <h4 class="modal-title">Delete Address</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">					
+                        <p>Are you sure you want to delete this Address?</p>
+                        <p class="text-warning"><small>This address records will gone..</small></p>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+      $('#updateUserFormdetail').submit(function (event) {
+          // Clear existing error messages
+          $('.error-name').text('');
+          $('.error-phone').text('');
+
+          var fullName = $('input[name="full_name"]').val().trim();
+          var phone = $('input[name="phone"]').val();
+
+          // Validation for Full Name (no spaces, numbers, or symbols)
+          if (!fullName || /[\d~!@#$%^&*()_+`\-=[\]{};':"\\|,.<>/?]+/.test(fullName)) {
+              $('.error-name').text('Invalid Full Name. It must not be empty and should not contain numbers or symbols.');
+              event.preventDefault();  // Prevent form submission
+              return;
+          }
+
+          // Validation for Phone Number
+          if (!/^[5-9]\d{9}$/.test(phone)) {
+            $('.error-phone').text('Invalid Phone Number. It must be 10 digits and start with a digit greater than or equal to 5.');
+            event.preventDefault();  // Prevent form submission
+            return;
+          }
+
+          // If the script reaches here, the data is valid, and form submission will proceed.
+      });
+  });
+
+  $('#updateUserForm').submit(function (event) {
+      // Clear existing error messages
+      $('.error-current-password').text('');
+      $('.error-new-password').text('');
+      $('.error-confirm-password').text('');
+
+      var currentPassword = $('input[name="current_password"]').val();
+      var newPassword = $('input[name="new_password"]').val();
+      var confirmNewPassword = $('input[name="confirm_password"]').val();
+
+      // Validation for Current Password (add your own validation logic if needed)
+      // Example: Check if it's not empty, etc.
+
+      // Validation for New Password
+      if (!isValidPassword(newPassword)) {
+          $('.error-new-password').text('Invalid New Password. It must be at least 8 characters long, include a capital letter, a small letter, a number, and a special character.');
+          event.preventDefault();  // Prevent form submission
+          return;
+      }
+
+      // Validation for Confirm Password
+      if (newPassword !== confirmNewPassword) {
+          $('.error-confirm-password').text('Passwords do not match.');
+          event.preventDefault();  // Prevent form submission
+          return;
+      }
+
+      // If the script reaches here, the data is valid, and form submission will proceed.
+  });
+
+  // Function to validate the new password
+  function isValidPassword(password) {
+      // Add your password validation logic here
+      // Example: Minimum 8 characters, at least one capital letter, one small letter, one number, and one special character
+      var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      return passwordRegex.test(password);
+  }
+</script>
+
+
+{% endblock %}

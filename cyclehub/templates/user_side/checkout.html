@@ -1,0 +1,592 @@
+{%extends 'user_side/base.html'%}
+{%load static %}
+{% block content1 %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<style>
+	
+	.select-header {
+	background-color: #f9f9f9;
+	padding: 8px;
+	cursor: pointer;
+	height:200px;
+	}
+	
+	.select-header span {
+	display: block;
+	}
+	
+	.button {
+		font-size: 10px;
+		color: white;
+		cursor:pointer;
+	}
+	
+	
+</style>
+<link href="{% static 'user_side/css/checkout.css'%}" rel="stylesheet">{% endblock %}
+{% block content %}
+
+
+<div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center mb-5'><strong>CHECKOUT</strong></div>
+
+<section id="checkout">
+ <div class="container-xl">
+  <div class="checkout_1 row">
+    <div class="col-md-8">
+	  <div class="checkout_1l">
+		<span class="pull-right mb-5"><a type="button" href={% url 'add_address1' %} class="btn btn-success">
+			<i class="fa-solid fa-plus"></i><span>Add Address</span>
+		</a></span>
+		<h5>Make Your Checkout Here</h5>
+	   <p>Please register in order to checkout more quickly</p>
+	  </div>
+	  <form id="checkoutForm" method="POST">	  
+		<div class='col-12'style='width:100%;'>
+			{% for i in address%}
+			{% if i.is_listed %}
+			{%if forloop.counter == 1%}
+			<div class="form-check p-4 "style='border: 1px solid #000; border-radius:10px;'>
+				<input class="form-check-input ms-1" type="radio" name="exampleRadios" id="exampleRadios1" value="{{i.id}}" checked>
+				<span class="pull-right" data-bs-toggle="modal" data-bs-target="#exampleModals-{{forloop.counter}}" style="cursor: pointer;">
+					<i class="fa-solid fa-pen" style='color:red;'></i>
+				</span>			  
+				<label class="form-check-label ms-4" for="exampleRadios1">
+				<p><strong>Full Name:</strong>&nbsp;{{i.full_name|title}}<br>
+					<strong>Phone Number:</strong>&nbsp;{{i.phone_number|title}}<br>
+					<strong>Address:</strong>&nbsp;{{i.address|title}}<br>
+					<strong>City:</strong>&nbsp;{{i.city|title}}<br>
+					<strong>State:</strong>&nbsp;{{i.state|title}}<br>
+					<strong>Pincode:</strong>&nbsp;{{i.pincode|title}}<br>
+				</p>
+				
+				</label>
+			</div>
+			{%else%}
+			<div class="form-check p-4 "style='border: 1px solid #000; border-radius:10px;'>
+				<input class="form-check-input ms-1" type="radio" name="exampleRadios" id="exampleRadios1" value="{{i.id}}" >
+				<span class="pull-right" data-bs-toggle="modal" data-bs-target="#exampleModals-{{forloop.counter}}" style="cursor: pointer;">
+					<i class="fa-solid fa-pen" style='color:red;'></i>
+				</span>			  
+				<label class="form-check-label ms-4" for="exampleRadios1">
+				<p><strong>Full Name:</strong>&nbsp;{{i.full_name|title}}<br>
+					<strong>Phone Number:</strong>&nbsp;{{i.phone_number|title}}<br>
+					<strong>Address:</strong>&nbsp;{{i.address|title}}<br>
+					<strong>City:</strong>&nbsp;{{i.city|title}}<br>
+					<strong>State:</strong>&nbsp;{{i.state|title}}<br>
+					<strong>Pincode:</strong>&nbsp;{{i.pincode|title}}<br></p>
+				
+				</label>
+			</div>
+			{%endif%}
+			{% endif %}
+			{% endfor %}
+		  
+	    </div>
+
+	</div>
+	
+	 <div class="col-md-4">
+		<div class="checkout_1r mb-1">
+			<h5>OFFERS</h5>
+			<hr class="line">			
+			<p><b>Apply Coupon</b></p>
+			<input class='col-10 ms-2' id='appliedcoupon' name='appliedcoupon'>
+			<div id="couponMessage" style="font-size: 10px; color: red;"></div>
+			<div class='col-md-12 mt-3 ms-2 mb-3 row'>
+				<button class="button col-5" onclick="submitForm()">Apply Coupon</button>
+				<button class="button col-5 ms-2 mt-1" onclick="removeCoupon()" style='background-color:white!important;color:black!important;'>REMOVE</button>
+				<button class="button col-10 mt-1" data-toggle="modal" data-target="#exampleModalLong" style='background-color:black!important;color:white!important;'>
+					Available Coupons
+				</button>
+			</div>
+
+		</div>
+			
+       <div class="checkout_1r">
+	     <h5>CART TOTALS</h5>
+	     <hr class="line">
+		<h6 class="fw-bold font_13" style='font-size:14px;'>Products<span class="pull-right">₹{{total}}</span></h6>
+		{%for i in products%}
+		<h6 class='mt-0' style='font-family: "Times New Roman", Times, serif;font-size:13px;color:grey;'> &nbsp; &nbsp;{{i.tyresize_id.product_id.product_name}}<span class="pull-right">{{i.quantity}}x{{i.tyresize_id.offer_price}}</span></h6>
+		{%endfor%}
+		<h6 class="fw-bold mt-3 font_13"style='font-size:14px;'>(+) Shipping <span class="pull-right">Free shipping</span></h6>
+		<hr> 
+		<h6 class="fw-bold font_13" style='font-size:14px;'>Total <span class="pull-right" id="updatedTotal">₹{{total}}</span></h6><br>
+		<h5>PAYMENTS</h5>
+	     <hr class="line">
+		<input type="hidden" id="clickedButton" name="clickedButton" value="">
+
+<div class="form-check mt-2">
+    <input type="radio" class="form-check-input" id="paymentCOD" name="payment_method" value="Cash On Delivery">
+    <label class="form-check-label" for="paymentCOD">Cash On Delivery</label>
+</div>
+
+<div class="form-check mt-2">
+    <input type="radio" class="form-check-input" id="paymentRazorPay" name="payment_method" value="RazorPay">
+    <label class="form-check-label" for="paymentRazorPay">RazorPay</label>
+</div>
+<div class="form-check mt-2">
+    <input type="radio" class="form-check-input" id="paymentWallet" name="payment_method" value="Wallet">
+    <label class="form-check-label" for="paymentWallet">Wallet</label>
+</div>
+
+
+<h6 class="mt-3"><button class="button w-100" type='submit' id="checkoutBtn" onclick="setClickedButton('checkoutBtn')">PROCEED TO CHECKOUT</button></h6> 	   </div>
+	  </div>
+   </div>
+ </div>
+ 
+</section>
+</form>
+{%for i in address%}
+<div class="modal fade" id="exampleModals-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLabel">Edit Address</h5>
+		  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		</div>
+		<div class="modal-body">
+			<form action="../../edit_address1/{{i.id}}" method='POST'>
+				{% csrf_token %}
+				 
+				<div class="modal-body">					
+					<div class="form-group">
+						<label>Full Name</label>
+						<input name='full_name' value="{{i.full_name}}" type="text" class="form-control" required>
+					</div>
+					<div class="form-group">
+					 <label>Phone Number</label>
+					 <input name='phone_number' type="number" pattern="[0-9]{10}" value="{{i.phone_number}}" class="form-control" required>
+				 </div>
+				 <div class="form-group">
+					 <label>Address</label>
+					 <textarea name='address' class="form-control" required>{{i.address}}</textarea>   
+				 </div>
+				 <div class="form-group">
+					 <label>City</label>
+					 <input name='city' type="text"  value="{{i.city}}" class="form-control" required>
+				 </div>
+				 <div class="form-group">
+				   <label>State</label>
+				   <input name='state' type="text" value="{{i.state}}"  class="form-control" required>
+				 </div>
+				 <div class="form-group">
+					<label>Pincode</label>
+					<input name='pincode' class="form-control" value="{{i.pincode}}" type="text" required>	
+				 </div>					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn"style='background-color:#1d4289;color:white;'>Save Changes</button>
+				  </div>
+			 </form>
+		</div>
+		
+	  </div>
+	</div>
+  </div>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <h5 class="modal-title" id="exampleModalLongTitle">COUPONS</h5>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+			<div id="availableCoupons" class="mt-2">
+				<strong>Available Coupons:</strong>
+				<ul class='mt-4'>
+					{% for coupon in available_coupons %}
+					{% if coupon.valid_to >= today_date %}
+						<li >
+							<strong>{{ coupon.coupon_title }}</strong><br>
+							<span><strong>Code:</strong> {{ coupon.coupon_code }}</span><br>
+							<span><strong>Discount:</strong> {{ coupon.discount }} {% if coupon.discount_type == 'percentage' %}%{% endif %}</span><br>
+							<span><strong>Valid From:</strong> {{ coupon.valid_from }}</span><br>
+							<span><strong>Valid To:</strong> {{ coupon.valid_to }}</span><br>
+							<span><strong>Quantity:</strong> {{ coupon.quantity }}</span><br>
+							<span><strong>Minimum Order:</strong> {{ coupon.minimum_order }}</span><br>
+							<hr>
+						</li>
+					{%endif%}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+		<div class="modal-footer">
+		  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	</div>
+  </div>
+
+  {%endfor%}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		
+		$(document).ready(function () {
+			// Handle form submission
+			$('#checkoutForm').submit(function (e) {
+				e.preventDefault();
+		
+				// Check if the "Proceed to Checkout" button was clicked
+				if (e.originalEvent.submitter.id === 'checkoutBtn') {
+					// Your logic for the "Proceed to Checkout" button
+					console.log('Proceed to Checkout button clicked');
+				} else {
+					// Logic for other buttons
+					console.log('Other button clicked');
+				}
+		
+				// Continue with the rest of your form submission logic
+			});
+		});
+		
+		$(document).ready(function () {
+			// Handle form submission
+			$('#checkoutForm').submit(function (e) {
+				e.preventDefault();
+	
+				// Check if there are cart products
+				if ({{ products|length }} === 0) {
+					Swal.fire({
+						icon: "info",
+						title: "Please add products to your cart before proceeding to checkout.",
+						showConfirmButton: false,
+						timer: 1500
+					});
+					
+					
+					// Redirect to the home page
+					
+					return;
+				}
+				var code = $('#appliedcoupon').val();
+
+				// Get the selected address ID
+				var selectedAddressId = $('input[name="exampleRadios"]:checked').val();
+	
+				// Get the selected payment method
+				var selectedPaymentMethod = $('input[name="payment_method"]:checked').val();
+
+				if (selectedAddressId && selectedPaymentMethod) {
+					// Prepare data for AJAX submission
+					console.log('Working')
+					if (selectedPaymentMethod==="Cash On Delivery"){
+						var formData = {
+							'address_id': selectedAddressId,
+							'code':code,
+							'payment_method': selectedPaymentMethod,
+							'csrfmiddlewaretoken': '{{ csrf_token }}'
+						};
+		
+						// Perform AJAX submission
+						$.ajax({
+							type: 'POST',
+							url: '{% url "orderconfirmation" %}',
+							data: formData,
+							dataType: 'json',
+							success: function (data) {
+								console.log('Form submitted successfully');
+								console.log(data);
+		                        
+								if (data.success) {
+									// Check if a redirect URL is provided
+									if (data.redirect) {
+										
+										window.location.href = data.redirect;
+									} else {
+										// Handle success without redirect if needed
+										console.log('Order confirmed successfully.');
+									}
+								} else {
+									Swal.fire({
+										icon: "error",
+										title: data.message,
+										showConfirmButton: false,
+										timer: 1500
+									});
+									console.log('Server returned an error:', data.message);
+								}
+							},
+							error: function (error) {
+								Swal.fire({
+									icon: "error",
+									title: 'Error submitting form',
+									showConfirmButton: false,
+									timer: 1500
+								});
+								console.log('Error submitting form');
+								console.log(error);
+								// Add logic to handle the error response
+							}
+						});
+
+					}else if (selectedPaymentMethod==='RazorPay'){
+						var formData = {
+							'address_id': selectedAddressId,
+							'code':code,
+							'payment_method': selectedPaymentMethod,
+							'csrfmiddlewaretoken': '{{ csrf_token }}'
+						};
+						var options = {
+							"key": "rzp_test_IUeyTKMvziJwal", // Enter the Key ID generated from the Dashboard
+							"amount": '{{razortotal}}', 
+							"currency": "INR",
+							"name": "cycle hub",
+							"description": "Transaction",
+							"image": "https://media.discordapp.net/attachments/769486943439552523/1174942070893453352/13b19732-1478-4977-a41f-01e8bd9b1e6a.jpg?ex=65696d13&is=6556f813&hm=a5859223ed528b3ad8287918ec26510b98875b9448f4e810a850365ce34dd12b&=&width=1083&height=360",
+							
+							"handler": function (responseb){
+
+								$.ajax({
+									type: 'POST',
+									url: '{% url "orderconfirmation" %}',
+									data: formData,
+									dataType: 'json',
+									success: function (data) {
+										if (data.success) {
+											// Check if a redirect URL is provided
+											if (data.redirect) {
+												
+												window.location.href = data.redirect;
+											} else {
+												// Handle success without redirect if needed
+												console.log('Order confirmed successfully.');
+											}
+										} else {
+											Swal.fire({
+												icon: "error",
+												title: data.message,
+												showConfirmButton: false,
+												timer: 1500
+											});
+											console.log('Server returned an error:', data.message);
+										}
+									},
+									error: function (error) {
+										Swal.fire({
+											icon: "error",
+											title: 'Error submitting form',
+											showConfirmButton: false,
+											timer: 1500
+										});
+										console.log('Error submitting form');
+										console.log(error);
+										// Add logic to handle the error response
+									}
+								});
+												
+							},
+							"prefill": {
+								"name": "Cycle Hub",
+								"email": "cyclehub@gmail.com",
+								"contact": "9000090000"
+							},
+							"notes": {
+								"address": "Cycle Hub "
+							},
+							"theme": {
+								"color": "#3399cc"
+							}
+						};
+						var rzp1 = new Razorpay(options);
+						rzp1.on('payment.failed', function (responseb){
+								alert(responseb.error.code);		
+						});
+						
+						rzp1.open();
+						
+
+					}else if (selectedPaymentMethod==='Wallet'){
+						console.log('working')
+						var formData = {
+							'address_id': selectedAddressId,
+							'code':code,
+							'payment_method': selectedPaymentMethod,
+							'csrfmiddlewaretoken': '{{ csrf_token }}'
+						};
+						$.ajax({
+							type: 'POST',
+							url: '{% url "orderconfirmation" %}',
+							data: formData,
+							dataType: 'json',
+							success: function (data) {
+								console.log('Form submitted successfully');
+								console.log(data);
+								
+								if (data.success) {
+									// Check if a redirect URL is provided
+									if (data.redirect) {
+										
+										window.location.href = data.redirect;
+									} else {
+										// Handle success without redirect if needed
+										console.log('Order confirmed successfully.');
+									}
+								} else {
+									Swal.fire({
+										icon: "error",
+										title: data.message,
+										showConfirmButton: false,
+										timer: 1500
+									});
+									console.log('Server returned an error:', data.message);
+								}
+							},
+							error: function (error) {
+								Swal.fire({
+									icon: "error",
+									title: 'Error submitting form',
+									showConfirmButton: false,
+									timer: 1500
+								});
+								console.log('Error submitting form');
+								console.log(error);
+								// Add logic to handle the error response
+							}
+						});
+					}
+						
+				} else {	
+									
+					console.log('Please select both an address and a payment method');
+				}
+			});
+		});
+		
+	</script>
+	<script>
+	function setClickedButton(buttonId) {
+		document.getElementById('clickedButton').value = buttonId;
+	}
+
+	$(document).ready(function () {
+		// Handle form submission
+		$('#checkoutForm').submit(function (e) {
+			e.preventDefault();
+
+			// Check if the "Proceed to Checkout" button was clicked
+			if (e.originalEvent.submitter.id === 'checkoutBtn') {
+				// Your logic for the "Proceed to Checkout" button
+				console.log('Proceed to Checkout button clicked');
+			} else {
+				// Logic for other buttons
+				console.log('Other button clicked');
+			}
+
+			// Continue with the rest of your form submission logic
+		});
+	});
+	
+</script>
+<script>
+    // Function to submit the form and apply the coupon
+    function submitForm() {
+        var code = $('#appliedcoupon').val();
+        var formData = {
+            'appliedcoupon': code,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        };
+		$.ajax({
+			type: 'POST',
+			url: '{% url "apply_coupon" %}',
+			data: formData,
+			dataType: 'json',
+			success: function (data) {
+				// Check if the response indicates success
+				if (data.success) {
+					// Handle success case
+					console.log('Coupon applied successfully:', data);
+		
+					// Display the coupon application message
+					$('#couponMessage').text(data.message);
+					$('#updatedTotal').text('₹' + data.tot);
+					$('#coupon-applied').text(code + ' coupon applied !')
+				} else {
+					// Handle failure case
+					console.error('Coupon application failed:', data);
+		
+					// Display an error message
+					$('#couponMessage').text(data.message);
+					$('#updatedTotal').text('₹' + data.tot);
+				    $('#appliedcoupon').val('');
+					setTimeout(function () {
+						$('#couponMessage').hide();
+					}, 3000);
+				}
+			},
+			error: function (error) {
+				// Handle errors during AJAX request
+				console.error('Error applying coupon:', error);
+		
+				// Display an error message
+				$('#couponMessage').text('Error applying coupon. Please try again.');
+				$('#updatedTotal').text('₹' + data.tot);
+				$('#appliedcoupon').val('');
+				setTimeout(function () {
+					$('#couponMessage').hide();
+				}, 3000);
+			}
+		});
+        
+    }
+
+    // Function to remove the applied coupon
+    function removeCoupon() {
+        // Remove the applied coupon from sessionStorage
+        sessionStorage.removeItem('appliedCoupon');
+
+        // Clear the input field
+        $('#appliedcoupon').val('');
+
+        // Optionally, you can also update the couponMessage element
+        $('#couponMessage').text('');
+
+        console.log('Coupon removed');
+    }
+
+    // Check if there's a stored coupon on page load
+    $(document).ready(function () {
+        var storedCoupon = sessionStorage.getItem('appliedCoupon');
+        if (storedCoupon) {
+            // Set the value of the input field
+            $('#appliedcoupon').val(storedCoupon);
+
+            // Display the coupon application message
+            $('#couponMessage').text('Coupon "' + storedCoupon + '" applied.');
+        }
+    });
+	// Function to remove the applied coupon
+	function removeCoupon() {
+		// Remove the applied coupon from sessionStorage
+		sessionStorage.removeItem('appliedCoupon');
+
+		// Clear the input field
+		$('#appliedcoupon').val('');
+
+		// Optionally, you can also update the couponMessage element
+		$('#couponMessage').text('');
+        $('#coupon-applied').text('')
+		// Restore the original total (assuming you have the original total stored somewhere)
+		var originalTotal =" {{total}}";  // Replace this with your actual original total
+		$('#updatedTotal').text('₹' + originalTotal);
+
+		console.log('Coupon removed');
+	}
+    
+</script>
+
+{% endblock %}
+

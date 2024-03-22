@@ -1,0 +1,249 @@
+{%extends 'user_side/base.html'%}
+{% load static %}
+{% block content1 %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'path/to/bootstrap/css/bootstrap.min.css' %}">
+<script src="{% static 'path/to/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<link href="{% static 'user_side/css/index.css'%}" rel="stylesheet">
+<style>
+	.carousel-control-prev-icon,.carousel-control-next-icon{
+		display:none;
+	}
+	.favorite-icon {
+		cursor: pointer;
+	}
+
+	.favorite-icon .far {
+		color: gray;
+	}
+
+	.favorite-icon .fas {
+		color: #1d4289;
+	}
+
+	@media (max-width: 600px) {
+		.image {
+			display: none;
+		}
+	}
+    @media (max-width: 580px) {
+		#center1 {
+			display: none;
+		}#center2{
+            display:block;
+		}
+	}
+	@media (min-width: 580px) {
+		#center1 {
+			display: block;
+		}
+		#center2{
+            display:none;
+		}
+	}
+	.carousel-caption {
+		text-align: center;
+		position: absolute;
+		top: 0; /* Position at the top of the image */
+		right: 0;
+		left: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		height: 100%; /* Make the height 100% to center content vertically */
+	}
+
+	@media (max-width: 767px) {
+		.carousel-caption {
+			text-align: left;
+		}
+	}
+
+	.text-container {
+		margin-top: 20px; /* Adjust the margin to create space between header and "SHOP NOW" */
+	}
+
+</style>
+
+
+{% endblock %}
+
+
+
+{% block content %}
+<section id="center2" class="center_home mt-5">
+	<div class="image-container">
+	  <img src={% static 'user_side/img/main.jpg' %} class="d-block w-100" alt="...">
+	</div>
+	<div class="content">
+	  <div class="text-container">
+		<h1 class="text-dark fw-normal font_50 me-2"><span class="fw-bold">Find Your Dream Ride Here</span></h1>
+		
+		<h6 class="text-uppercase  mb-0"><a class="button" href="../../shop/?categories_id=0&brand_id=0">SHOP NOW</a></h6>
+	  </div>
+	</div>
+  </section>
+  <section id="center1" class="center_home col-12">
+	<div id="carouselExample" class="carousel slide col-12" data-ride="carousel">
+		<div class="carousel-inner">
+			{% for banner in banners %}
+				<div class="carousel-item  {% if forloop.first %}active{% endif %}">
+					<img src="{{ banner.image.url }}" class="image d-block w-100 col-6 img-fluid" alt="{{ banner.header }}">
+					<div class="carousel-caption  text-end col-6 ">
+						<h1 class="text-dark fw-normal ">
+							<span class="fw-bold">{{ banner.header }}</span>
+						</h1>
+						<div class="text-container">
+							<h6 class="text-uppercase mb-0">
+								<a class="button" href="{%url 'shop'%}">SHOP NOW</a>
+							</h6>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+		<a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="carousel-control-next" href="#carouselExample" role="button" data-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+</section>
+
+
+<section id="prod_o" class="pt-4 pb-4">
+ <div class="container-xl">
+  <div class="row prod_1 mb-4 text-center ">
+     <div class="col-md-12 mb-4 ">
+	  <h2 class=" mt-4 mb-3 " >EXCLUSIVE OFFERS</h2>
+	 </div>
+  </div>
+  
+  <div class="prod_o2 row mt-4 ">
+	
+    <div class="tab-content">
+    <div class="tab-pane active" id="home">
+      <div class="prod_o2i row">
+		{% for i in k %}
+		{% if forloop.counter <= 3 %}
+		<div class="col-sm-6 col-md-4 col-lg-4 mt-3">
+		<div class="prod_2im position-relative clearfix" style='box-shadow: 0 0 5px white;'>
+		<div class="prod_2i1 clearfix">
+		<div class="grid clearfix">
+			  <figure class="effect-jazz mb-0" >
+				<a href="../../product_detail/{{i.id}}"><img src={{i.images_set.first.image.url}} class="w-100" alt="abc"></a>
+			  </figure>
+		  </div>
+		</div>
+		<div class="prod_2i2 pt-5 pb-4  pe-3  clearfix">
+		<h6><a href="../../product_detail/{{i.id}}">{{i.product_name|title}}</a></h6>
+		<p class='mb-1' style='font-size:11px; color:grey;'>{{i.brand_id.brand_name|title}}</p>
+		<p style='font-size:11px; color:grey;'>{{i.category_id.category_name|title}}</p>
+		{% if i.category_id.category_offer == 0 and i.product_offer == 0%}
+		  <h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.price}}</span></h6>
+		  {% else %}
+		  	<h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.offer_price}}</span>&nbsp;<span style='font-size:12px;color:red;' class="text-decoration-line-through pull-right"><strong>₹{{i.tyresize_set.first.price}}</strong></span> </h6>
+          {%endif%}
+		</div>
+		<div class="prod_2i3 clearfix position-absolute w-100">
+			{%if i.category_id.category_offer == 0 and i.product_offer == 0 %}
+			{% elif i.category_id.category_offer > i.product_offer%}
+			<div class="prod_2i3 clearfix position-absolute w-100">
+			  <h6 class=" d-inline-block pt-1 pb-1 font_13 text-white ps-3 pe-3 pull-right" style='background-color:#1d4289;'>{{i.category_id.category_offer}}%</h6>
+			</div>
+			{%else%}
+			<div class="prod_2i3 clearfix position-absolute w-100">
+			  <h6 class=" d-inline-block pt-1 pb-1 font_13 text-white ps-3 pe-3 pull-right" style='background-color:#1d4289;'>{{i.product_offer}}%</h6>
+			</div>
+			{%endif%}
+		</div>
+		</div>
+		</div>
+		{% endif %}
+		{% endfor %}
+        
+		
+
+	</div>
+
+
+</section>
+
+<section class='mb-4'>
+	<div class="container-xl">
+		<div class="row prod_1 mb-4 text-center">
+		   <div class="col-md-12 mb-4">
+			<h2 class="  mt-4 mb-3">SUPER DEALS</h2>
+		   </div>
+		</div>
+		
+		<div class="prod_o2 row mt-4 ">
+		  
+		  <div class="tab-content">
+		  <div class="tab-pane active" id="home">
+			<div class="prod_o2i row">
+			  {% for i in k %}
+			  {% if forloop.counter >= 4 and forloop.counter <= 9 %}
+			  <div class="col-sm-6 col-md-4 col-lg-4 mt-3">
+			  <div class="prod_2im position-relative clearfix" style='box-shadow: 0 0 5px white;'>
+			  <div class="prod_2i1 clearfix">
+			  <div class="grid clearfix">
+					<figure class="effect-jazz mb-0" >
+					  <a href="../../product_detail/{{i.id}}"><img src={{i.images_set.first.image.url}} class="w-100" alt="abc"></a>
+					</figure>
+				</div>
+			  </div>
+			  <div class="prod_2i2 pt-5 pb-4  pe-3 ms-2 clearfix">
+			  <h6><a href="../../product_detail/{{i.id}}">{{i.product_name|title}}</a></h6>
+			  <p class='mb-1' style='font-size:11px; color:grey;'>{{i.brand_id.brand_name|title}}</p>
+			  <p style='font-size:11px; color:grey;'>{{i.category_id.category_name|title}}</p>
+			  {% if i.category_id.category_offer == 0 and i.product_offer == 0%}
+			<h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.price}}</span></h6>
+			{% else %}
+				<h6 class="fw-normal mb-0"><span class="fw-bold col_yell">₹{{i.tyresize_set.first.offer_price}}</span>&nbsp;<span style='font-size:12px;color:red;' class="text-decoration-line-through pull-right"><strong>₹{{i.tyresize_set.first.price}}</strong></span> </h6>
+			{%endif%}
+			  </div>
+			  <div class="prod_2i3 clearfix position-absolute w-100">
+				{%if i.category_id.category_offer == 0 and i.product_offer == 0 %}
+				{% elif i.category_id.category_offer > i.product_offer%}
+				<div class="prod_2i3 clearfix position-absolute w-100">
+				  <h6 class=" d-inline-block pt-1 pb-1 font_13 text-white ps-3 pe-3 pull-right" style='background-color:#1d4289;'>{{i.category_id.category_offer}}%</h6>
+				</div>
+				{%else%}
+				<div class="prod_2i3 clearfix position-absolute w-100">
+				  <h6 class=" d-inline-block pt-1 pb-1 font_13 text-white ps-3 pe-3 pull-right" style='background-color:#1d4289;'>{{i.product_offer}}%</h6>
+				</div>
+				{%endif%}
+			  </div>
+			  </div>
+			  </div>
+			  {% endif %}
+			  {% endfor %}
+</section>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.1/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('.carousel').carousel(); // Initialize the carousel
+    $('.favorite-icon').on('click', function () {
+      $(this).find('.far').toggleClass('fas');
+    });
+  });
+</script>
+
+{% endblock %}
+
+

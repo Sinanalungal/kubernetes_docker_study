@@ -1,0 +1,118 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content2 %}class='active'{%endblock%}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<style>
+    .dataTables_info{
+        font-size:12px;
+        color:black;
+        
+    }
+    .dataTables_paginate{
+        font-size:12px;
+        color:black;
+
+    }
+    .dataTables_length{
+        font-size:12px;
+        color:black;
+    }
+    .dataTables_filter{
+        font-size:14px;
+        color:black;
+    }
+</style>
+        <div class="breadcrumbs">
+            <div class="breadcrumbs-inner">
+                <div class="row m-0">
+                    <div class="col-sm-4">
+                        <div class="page-header float-left">
+                            <div class="page-title">
+                                <h1><strong>Orders</strong></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="page-header float-right">
+                            <div class="page-title">
+                                <ol class="breadcrumb text-right">
+                                    <li><a href="#">Dashboard</a></li>
+                                    <li class="active">Orders</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="card-header">
+                <strong class="card-title">Orders Table</strong>
+            </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card p-3">
+                            
+                            <div class="table-stats  ov-h">
+                                <table class="table datatable table-striped table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Order ID</th>
+                                            <th>Total Price</th>
+                                            <th>Remaining Price</th>
+                                            <th>Payment Method</th>
+                                            <th>Expected Delivery date</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in orders %}
+                                        <tr>
+                                            <td class="serial">{{i.id}}</td>
+                                            <td>{{i.order_id}}</td>
+                                            <td>  <span>{{i.fullproducttotal}}</span> </td>
+                                            <td>  <span>{{i.remainingbalance}}</span> </td>
+                                            <td> <span>{{i.payment_method}}</span> </td>
+                                            <td><span >{{i.expected_delivery}}</span></td>
+                                            <td>
+                                                <a href='../../about_order/{{i.id}}'><span class="badge badge-secondary">View Products</span></a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                       
+                                    </tbody>
+                                </table>
+                            </div> 
+                        </div>
+                    </div>
+                   
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // DataTable initialization
+        var dataTable = $('.datatable').DataTable(); 
+
+        // Search functionality
+        $('#searchBtn').on('click', function () {
+            var searchValue = $('#searchInput').val().toLowerCase();
+            dataTable.search(searchValue).draw();
+        });
+
+        // Filter functionality
+        $('#categoryFilter').on('change', function () {
+            var categoryValue = $(this).val().toLowerCase();
+            dataTable.column(3).search(categoryValue).draw(); // Adjust the column index based on your data
+        });
+    });
+</script>
+{%endblock%}
+
+

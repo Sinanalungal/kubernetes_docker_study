@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style type="text/css">
+      /* Style the header: fixed position (always stay at the top) */
+      .header {
+        position: fixed;
+        top: 0;
+        z-index: 1;
+        text-align: center;
+        width: 100%;
+        background-color: #f1f1f1;
+      }
+
+      .content {
+        margin-top: 60px; /* Adjusted margin to accommodate the fixed header */
+        font-size: large;
+        text-align: center;
+        text-emphasis-color: red;
+      }
+
+      /* Your existing styles for card and table */
+      .card {
+        font-size: 13px;
+      }
+
+      /* Add some spacing between rows */
+      .table tbody tr td {
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <!-- Add your header content here -->
+    </div>
+
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Cancel Report</h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered" id='cancel'>
+                    <thead>
+                      <tr>
+                        <th>Order Id</th>
+                        <th>Ordered Date</th>
+                        <th>Payment Method</th>
+                        <th>Products</th>
+                        <th>Price</th>
+                        <th>Payment Status</th>
+                        <th>Order Detail</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for i in cancel %}
+                      <tr>
+                        <td>{{ i.order_id|upper }}</td>
+                        <td>{{ i.order_date }}</td>
+                        <td>{{ i.payment_method }}</td>
+                        <td>
+                          {% for j in i.ordered_items.all %}
+                          {{ j.tyrevariant.product_id.product_name }}[{{ j.tyrevariant.tyre_size }}]<br><br>
+                          {% endfor %}
+                        </td>
+                        <td>
+                          {% for j in i.ordered_items.all %}
+                          {{ j.price }}<br><br>
+                          {% endfor %}
+                        </td>
+                        <td>
+                          {% for j in i.ordered_items.all %}
+                          {{ j.payment_status }}<br><br>
+                          {% endfor %}
+                        </td>
+                        <td>
+                          {% for j in i.ordered_items.all %}
+                          {{ j.status }}<br><br>
+                          {% endfor %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="exportTableToExcel('cancel', 'cancel_report')">Export to Excel</button>
+
+ <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+ 
+ <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+ 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+ 
+ <script>
+   function exportTableToExcel(tableId, filename) {
+     $("#" + tableId).table2excel({
+       filename: filename + ".xls",
+       name: "Worksheet Name",
+       sheet: {
+         name: "Sheet 1"
+       }
+     });
+   }
+ </script>
+  </body>
+</html>

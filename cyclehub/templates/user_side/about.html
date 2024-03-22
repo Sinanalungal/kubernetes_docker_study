@@ -1,0 +1,82 @@
+{%extends 'user_side/base.html'%}
+{%load static %}
+{% block content1 %}<link href="{% static 'user_side/css/about.css'%}" rel="stylesheet">{% endblock %}
+
+{% block content %}
+<div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center mb-5'><strong>ABOUT US</strong></div>
+
+
+<section id="about_pg" class="pt-4 pb-4">
+ <div class="container-xl">
+  <div class="about_pg_1 row">
+   <div class="col-md-6">
+    <div class="about_pg_1l">
+	  <div class="grid clearfix">
+			  <figure class="effect-jazz mb-0">
+              <img style='margin-top: 120px;'  src={% static 'admin_side/images/transparent background.png' %} class="w-100" alt="abc">
+			  </figure>
+		  </div>
+	</div>
+   </div>
+   <div class="col-md-6">
+    <div class="about_pg_1r mt-5">
+	 <h3>OUR STORY</h3>
+	 <p class="mt-4 mb-2"><strong>Welcome to Cycle Hub!</strong><br>
+
+		At Cycle Hub, we are passionate about cycling and committed to providing the best experience for all cycling enthusiasts. Whether you're a seasoned rider or just starting your cycling journey, our online platform is designed to cater to your every need.
+		
+		Our mission is to make cycling accessible, enjoyable, and hassle-free. We offer a diverse range of high-quality bicycles, cycling accessories, and gear to suit every rider's preferences and requirements. From sleek road bikes for speed enthusiasts to sturdy mountain bikes for off-road adventures, we have you covered.
+		
+		What sets Cycle Hub apart is our dedication to customer satisfaction. We strive to deliver not only top-notch products but also exceptional service. Our team consists of avid cyclists who understand the needs of the cycling community, and we are here to assist you at every step of your cycling experience.
+		
+		Explore our user-friendly website to discover the latest trends in cycling, benefit from expert advice, and find the perfect gear to elevate your ride. Join us at Cycle Hub, where the love for cycling meets unparalleled convenience. Happy cycling!</p>
+
+	 <div class="about_pg_1ri row mt-4">
+	  </div>
+	  
+	 </div>
+	</div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="spec" class="pt-4 pb-4 bg-light">
+ <div class="container-xl">
+   <div class="row prod_1 mb-4 text-center">
+     <div class="col-md-12">
+	  <h6 class="h_line font_13">WHY CHOOSE US</h6>
+	  <h2 class="mb-0 col_yell mt-3">EXPERIENCE IN SETTING UP</h2>
+	 </div>
+  </div>
+  <div class="row spec_1 mt-4">
+     <div class="col-md-4">
+	   <div class="spec_1i bg-white p-4 pt-2">
+	    <span class="col_yell font_50"><i class="fa fa-rocket"></i></span>
+		<h5 class="mt-3">Home Fast Delivery</h5>
+		<p class="mt-3">"Swift and Reliable Delivery: Experience the convenience of home fast delivery with Cycle Hub. We prioritize prompt shipping, ensuring your chosen bicycle and accessories reach your doorstep swiftly. Ride stress-free, knowing your order is in safe hands. Your cycling adventure begins soon after you click 'Order'!"</p>
+	   </div>
+	 </div>
+	 <div class="col-md-4">
+	   <div class="spec_1i bg-white p-4 pt-2">
+	    <span class="col_yell font_50"><i class="fa fa-credit-card"></i></span>
+		<h5 class="mt-3">Secure Payment</h5>
+		<p class="mt-3">"Secure Transactions, Seamless Rides: At Cycle Hub, trust is paramount. Enjoy worry-free shopping with our secure payment system. Your financial data is safeguarded, ensuring a smooth and protected transaction process. Pedal into excitement with confidence, as your cycling essentials are just a secure payment away!</p>
+	   </div>
+	 </div>
+	 <div class="col-md-4">
+	   <div class="spec_1i bg-white p-4 pt-2">
+	    <span class="col_yell font_50"><i class="fa fa-phone"></i></span>
+		<h5 class="mt-3">24/7 Customer Support</h5>
+		<p class="mt-3">
+			"Exceptional Service, Tailored for You: Experience personalized assistance at Cycle Hub. Our dedicated customer service team is here to ensure your cycling journey is seamless. From product inquiries to post-purchase support, we're committed to providing top-notch service. Ride worry-free with Cycle Hub, where your satisfaction is our priority."</p>
+	   </div>
+	 </div>
+  </div>
+ </div>
+</section>
+
+{% endblock %}
+
+
+</html>

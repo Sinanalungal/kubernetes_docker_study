@@ -1,0 +1,16 @@
+.my-button {
+    background-color: #0074d9; /* Button background color */
+    color: #fff; /* Text color */
+    padding: 10px 20px; /* Padding inside the button */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Cursor style on hover */
+    font-size: 16px; /* Text size */
+    
+  }
+  
+  /* Add hover effect */
+  .my-button:hover {
+    background-color: #0056b3; /* New background color on hover */
+  }
+  

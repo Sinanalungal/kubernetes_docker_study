@@ -1,0 +1,138 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block style %}
+<title>Coupons</title>
+
+{%endblock%}
+{% block content8 %}class='active'{%endblock%}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<style>
+    .dataTables_info{
+        font-size:12px;
+        color:black;
+        
+    }
+    .dataTables_paginate{
+        font-size:12px;
+        color:black;
+
+    }
+    .dataTables_length{
+        font-size:12px;
+        color:black;
+    }
+    .dataTables_filter{
+        font-size:14px;
+        color:black;
+    }
+</style>
+
+        <div class="breadcrumbs">
+            <div class="breadcrumbs-inner">
+                <div class="row m-0">
+                    <div class="col-sm-4">
+                        <div class="page-header float-left">
+                            <div class="page-title">
+                                <h1>Coupons</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="page-header float-right">
+                            <div class="page-title">
+                                <ol class="breadcrumb text-right">
+                                    <li><a href="#">Dashboard</a></li>
+                                    <li class="active">Coupons</li>
+                                </ol>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'add_coupons' %}" ><button type="button" class="btn btn-dark float-right mx-5 mt-3"  style='border-radius:15px;'>Add Coupons</button></a>
+        <div class="content">
+            <div class="card-header">
+                <strong class="card-title">Coupon Table</strong>
+            </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card p-3">
+                            <div class="table-stats  ov-h">
+                                <table class="table datatable table-striped table-bordered">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th class="serial">Id</th>
+                                            <th>Coupon Code</th>
+                                            <th>Coupon Title</th>
+                                            <th>Discount Type</th>
+                                            <th>Discount</th>
+                                            <th>Valid From</th>
+                                            <th>Valid To</th>
+                                            <th>Limit</th>
+                                            <th>Used Count</th>
+                                            <th>Minimum Order</th>
+                                            <th>Edit</th>
+                                            <th>Action</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in m %}
+                                        <tr>
+                                            <td class="couponid">{{i.id}}</td>
+                                            
+                                            <td>{{i.coupon_code}}</td>
+                                            <td>  <span class="title">{{i.coupon_title}}</span> </td>
+                                            <td> <span class="discount type">{{i.discount_type}}</span> </td>
+                                            <td><span class="discount">{{i.discount}}</span></td>
+                                            <td><span class="validfrom">{{i.valid_from}}</span></td>
+                                            <td><span class="validto">{{i.valid_to}}</span></td>
+                                            <td><span class="quantity">{{i.quantity}}</span></td>
+                                            <td><span class="usedcount">{{i.usage_count}}</span></td>
+                                            <td><span class="minimum_order">{{i.minimum_order}}</span></td>
+                                            <td><a href='edit_coupon/{{i.id}}'><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg></a></td>
+                                            <td>
+                                                {% if i.is_listed %}
+                                                    <a href='couponlist/{{i.id}}' ><span class="badge badge-danger">Deactivate</span></a>
+                                                {% else %}
+                                                <a href='couponlist/{{i.id}}' ><span class="badge badge-success">Activate</span></a>
+                                                {% endif %}
+                                            </td>
+                                            <td><a href='deletecoupon/{{i.id}}'><span class="badge badge-danger">Delete</span></a></td>
+                                        </tr>
+                                        {% endfor %}
+                                       
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                   
+
+        </div>
+    </div>
+</div><!-- .content -->
+<script>
+    $(document).ready(function () {
+        // DataTable initialization
+        var dataTable = $('.datatable').DataTable(); // Use DataTable() instead of dataTable()
+
+        // Search functionality
+        $('#searchBtn').on('click', function () {
+            var searchValue = $('#searchInput').val().toLowerCase();
+            dataTable.search(searchValue).draw();
+        });
+
+        // Filter functionality
+        $('#categoryFilter').on('change', function () {
+            var categoryValue = $(this).val().toLowerCase();
+            dataTable.column(3).search(categoryValue).draw(); // Adjust the column index based on your data
+        });
+    });
+</script>
+{%endblock%}

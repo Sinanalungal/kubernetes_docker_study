@@ -1,0 +1,226 @@
+{% extends 'user_side/base.html' %}
+{% block content1 %}
+<style>
+    .container {
+        margin-top: 50px;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    .table th,
+    .table td {
+        padding: 12px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
+    .btn-primary {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-warning {
+        color: #fff;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+<div class="container mt-5 ">
+    <div class="row justify-content-center ">
+        <div class="col-md-12 ">
+            <h4 class="mb-3">Ordered Items</h4>
+            <div class="table-responsive card">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr style='background-color:lightgrey;'>
+                            <th class="text-center">Image</th>
+                            <th class="text-center">Product</th>
+                            <th class="text-center">Tyre Size</th>
+                            <th class="text-center">Price</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-center">Total Price</th>
+                            <th class="text-center">Payment Method</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Payment Status</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    {% if order %}
+                    <tbody>
+                        
+                            {% for ordered_item in order %}
+                                {% for i in ordered_item.ordered_items.all %}
+                                    <tr id="product-{{ i.id }}">
+                                        <td class="text-center"><img src="{{ i.tyrevariant.product_id.images_set.first.image.url }}" height="90px"></td>
+                                        <td class="text-center">{{ i.tyrevariant.product_id.product_name }}</td>
+                                        <td class="text-center">{{ i.tyrevariant.tyre_size }}</td>
+                                        <td class="text-center">₹{{ i.tyrevariant.offer_price }}</td>
+                                        <td class="text-center">{{ i.quantity }}</td>
+                                        <td class="text-center">₹{{ i.price }}</td>
+                                        <td class="text-center">{{ i.order.payment_method }}</td>
+                                        <td class="text-center status-column">{{ i.status}}</td>
+                                        <td class="text-center status-column">{{ i.payment_status}}</td>
+                                        <td class="text-center action-column">
+                                            {% if i.status == 'Order Cancelled' or i.status == 'Order Returned'  %}
+                                                <a href="../../product_detail/{{i.tyrevariant.product_id.id}}" class="btn btn-primary btn-sm">View Product</a>
+                                            {% elif i.status == 'Order Delivered' %}
+                                                <button class="btn btn-warning btn-sm return-product" id='return-{{i.id}}' data-order-id="{{ i.id }}">Return</button>
+                                            {% else %}
+                                                <button class="btn btn-danger btn-sm cancel-product" id='cancel-{{i.id}}' data-order-id="{{ i.id }}">Cancel</button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+                            <tr style="height: 400px;" class="text-center">
+                                <td colspan="12">No ordered items.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.cancel-product').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                if (this.hasAttribute('disabled')) {
+                    Swal.fire({
+                        title: 'Order already canceled',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK',
+                        zIndex: 99999
+                    });
+                    return;
+                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will cancel the order!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!',
+                    zIndex: 99999
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'cancel_order' %}",
+                            data: {
+                                order_id: orderId,
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                            },
+                            success: function (data) {
+                                console.log(data);
+                                $("#product-" + orderId + " .status-column").text("Order Cancelled");
+                                $('#cancel-' + orderId).prop('disabled', true);
+                                $('#cancel-' + orderId).replaceWith('<a href="../../product_detail/{{i.tyrevariant.product_id.id}}" class="btn btn-primary btn-sm">View Product</a>');
+                                location.reload()
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                console.error(textStatus);
+                            },
+                        });
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.return-product').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                if (this.hasAttribute('disabled')) {
+                    Swal.fire({
+                        title: 'Order already returned',
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK',
+                        zIndex: 99999
+                    });
+                    return;
+                }
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This will initiate the return process!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, initiate return!',
+                    zIndex: 99999
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'returnproduct' %}",
+                            data: {
+                                order_id: orderId,
+                                csrfmiddlewaretoken: "{{ csrf_token }}",
+                            },
+                            success: function (data) {
+                                console.log(data);
+                                if (data.success) {
+                                    $("#product-" + orderId + " .status-column").text("Order Returned");
+                                    $('#return-' + orderId).prop('disabled', true);
+                                    $('#return-' + orderId).remove();
+                                    $('#product-' + orderId + ' .action-column').append('<a href="../../product_detail/{{i.tyrevariant.product_id.id}}" class="btn btn-primary btn-sm">View Product</a>');
+                                    location.reload()
+                                } else {
+                                    Swal.fire({
+                                        title: 'Return initiation failed',
+                                        icon: 'error',
+                                        confirmButtonColor: '#3085d6',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'OK',
+                                        zIndex: 99999
+                                    });
+                                }
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                console.error(textStatus);
+                            },
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

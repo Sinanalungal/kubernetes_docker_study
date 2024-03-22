@@ -1,0 +1,201 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Address</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <style>
+        .error {
+            font-size: 10px;
+            color: red;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+
+        h3 {
+            color: grey;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #ffffff;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 560px) {
+            img {
+                display: none;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <img src="{% static 'user_side/img/package.jpg' %}" class="img-fluid w-70 h-60">
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="container mt-5">
+                    <h3><strong>Add Address</strong></h3><br>
+
+                    <form id="addAddressForm" method='POST' action='add_address1'>
+                        {%csrf_token%}
+                        <div class="form-group">
+                            <label for="full_name">Full Name:</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name">
+                            <div class="error" id="firstNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number:</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number">
+                            <div class="error" id="phoneNumberError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <input type="text" class="form-control" id="address" name="address">
+                            <div class="error" id="addressError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">City:</label>
+                            <input type="text" class="form-control" id="city" name="city">
+                            <div class="error" id="cityError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State:</label>
+                            <input type="text" class="form-control" id="state" name="state">
+                            <div class="error" id="stateError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pincode">Pincode:</label>
+                            <input type="text" class="form-control" id="pincode" name="pincode">
+                            <div class="error" id="pincodeError"></div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Add validation rules
+            $("#addAddressForm").validate({
+                rules: {
+                    full_name: {
+                        required: true,
+                        minlength: 3,
+                        customValidation: true
+                    },
+                    phone_number: {
+                        required: true,
+                        digits: true,
+                        minlength: 10,
+                        maxlength: 10
+                    },
+                    address: {
+                        required: true,
+                        minlength: 3
+                    },
+                    city: {
+                        required: true,
+                        minlength: 3,
+                        customValidation: true
+                    },
+                    state: {
+                        required: true,
+                        minlength: 3,
+                        customValidation: true
+                    },
+                    pincode: {
+                        required: true,
+                        digits: true,
+                        maxlength: 6
+                    }
+                },
+                messages: {
+                    full_name: {
+                        required: "Please enter your full name"
+                    },
+                    phone_number: {
+                        required: "Please enter your phone number",
+                        digits: "Please enter only digits",
+                        minlength: "Please enter a valid 10-digit phone number",
+                        maxlength: "Please enter a valid 10-digit phone number"
+                    },
+                    address: {
+                        required: "Please enter your address",
+                        minlength: "Please enter a valid address"
+                    },
+                    city: {
+                        required: "Please enter your city",
+                        minlength: "Please enter a valid city"
+                    },
+                    state: {
+                        required: "Please enter your state",
+                        minlength: "Please enter a valid state"
+                    },
+                    pincode: {
+                        required: "Please enter your pincode",
+                        digits: "Please enter only digits",
+                        maxlength: "Please enter a valid pincode"
+                    }
+                }
+            });
+
+            // Add custom validation method
+            $.validator.addMethod("customValidation", function (value, element) {
+                var regex = /^(?!.*  )(?!.*\d)(?!.*[@#$%^&*()_+={};':",.<>/?`~\\|])[\w\s]+$/;
+                return this.optional(element) || regex.test(value);
+            }, "Invalid input");
+        });
+    </script>
+</body>
+
+</html>

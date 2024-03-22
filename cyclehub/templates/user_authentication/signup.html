@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'user_authentication/css/login.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row d-flex align-item-center justify-content-center">
+            <div class="col-md-6 col-12  hai">
+                <div class="signup-form mt-3">
+                    <div class="logoimg pb-1">
+                        <img class="sizeForImage" src="{% static 'user_authentication/images/transparent background.png' %}" alt="">
+                    </div>
+                    <form id='form' action="{% url 'signup' %}" method='POST'>
+                        {% csrf_token %}
+                        <div class="input-control mt-3 ">
+                            <input type="text" id="fullname" class="form-control input-with-border" name="fullname" placeholder="Full Name">
+                            <div class="error" id='firstone'></div>
+                        </div>
+                        <div class="input-control mt-3 ">
+                            <input type="email" id="email" class="form-control input-with-border" name="email" placeholder="Email">
+                            <div class="error">{% if messages %}
+                                {%for i in messages%}
+                                {%if i.tags == 'error' %}
+                                    {{i}}
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}</div>
+                        </div>
+                        <div class="input-control mt-3 ">
+                            <input type="tel" id="phonenumber" class="form-control input-with-border" name="phonenumber" placeholder="Phone Number">
+                            <div class="error">{% if messages %}
+                                {%for i in messages%}
+                                {%if i.tags == 'info' %}
+                                    {{i}}
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}</div>
+                        </div>
+                        <div class="input-control mt-3 ">
+                            <input type="password" id="password" class="form-control input-with-border" name="password" placeholder="Password">
+                            <div class="error">{% if messages %}
+                                {%for i in messages%}
+                                {%if i.tags == 'warning' %}
+                                    {{i}}
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}</div>
+                        </div>
+                        <div class="input-control mt-3 ">
+                            <input type="password" id='confirm_password' class="form-control input-with-border" name="confirm_password" placeholder="Confirm Password">
+                            <div class="error"></div>
+                        </div>
+
+                        <div class="mt-3 ">
+                            <input type="text" id='referal_code' class="form-control" name="referal_code" placeholder="Referal Code">
+                        </div>
+                        
+
+                        <div class="form-group">
+                            <span id="kkkk" class="login_botten_tag">
+                                <button type='submit' class="btn btn-block mt-4 buttensignup text-white" style='background-color:#1d4289;'>Sign Up</button>
+                            </span>
+                        </div>
+                        <p class="text-center text-dark small">Already have an account? <a  href="{%url 'login'%}" style='color:#1d4289'>Login here!</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src={% static 'user_authentication/js/login.js' %}></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#form').submit(function(event) {
+            var fullNameValue = $('#fullname').val();
+
+            var numberRegex = /\d/;
+
+            if (numberRegex.test(fullNameValue)) {
+                $('#firstone').text('Full Name cannot contain numbers.');
+                event.preventDefault(); // Prevent the form from submitting
+            }
+        });
+    });
+</script>
+
+
+</html>

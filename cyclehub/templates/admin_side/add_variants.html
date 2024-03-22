@@ -1,0 +1,123 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content3 %}class='active'{% endblock %}
+{% block content %}
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1><strong>Add Variants</strong></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li class="active">Add Variants</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="animated fadeIn row">
+        <div class="col-lg-10">
+            <form id="productForm" method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="number" class="form-control" id="tyre-size" name="tyresize" placeholder='Enter Tyresize' required>
+                    <div class="text-danger position-absolute" id="tyresize-error" style="margin:0; color: red;font-size: 10px;">{% if messages %}
+                        {% for i in messages %}
+                            {% if i.tags == 'info' %}
+                                {{ i }}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="number" class="form-control" id="price" name="price" placeholder='Price' required>
+                    <div class="text-danger position-absolute" id="price-error" style="margin:0; color: red;font-size: 10px;">
+                        {% if messages %}
+                            {% for i in messages %}
+                                {% if i.tags == 'error' %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="number" class="form-control" id="stock" name="stock" placeholder='Stock' required>
+                    <div class="text-danger position-absolute" id="stock-error" style="margin:0; color: red;font-size: 10px;">
+                        {% if messages %}
+                            {% for i in messages %}
+                                {% if i.tags == 'success' %}
+                                    {{ i }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn mt-3" style='border-radius:15px;background-color:#1d4289;color:white;'>Add Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+
+<script>
+    jQuery(document).ready(function () {
+        jQuery("#productForm").on("submit", function (event) {
+            // Validate Tyre Size
+            var tyreSize = parseInt(jQuery("#tyre-size").val());
+            if (isNaN(tyreSize) || tyreSize < 10 || tyreSize > 30) {
+                jQuery("#tyresize-error").text("Tyre size must be between 10 and 30.");
+                event.preventDefault(); // Prevent form submission
+                setTimeout(function () {
+                    jQuery("#tyresize-error").text("");
+                }, 3000);
+            } else {
+                jQuery("#tyresize-error").text("");
+            }
+
+            // Validate "Price"
+            var price = parseFloat(jQuery("#price").val());
+            if (isNaN(price) || price < 0) {
+                jQuery("#price-error").text("Price must be a valid positive decimal value.");
+                event.preventDefault();
+                setTimeout(function () {
+                    jQuery("#price-error").text("");
+                }, 3000);
+            } else {
+                jQuery("#price-error").text("");
+            }
+
+            // Validate "Stock"
+            var stock = parseInt(jQuery("#stock").val());
+            if (isNaN(stock) || stock < 0 || stock % 1 !== 0) {
+                jQuery("#stock-error").text("Stock must be a valid non-negative integer.");
+                event.preventDefault();
+                setTimeout(function () {
+                    jQuery("#stock-error").text("");
+                }, 3000);
+            } else {
+                jQuery("#stock-error").text("");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

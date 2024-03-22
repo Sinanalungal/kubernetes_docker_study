@@ -1,0 +1,153 @@
+{% extends 'user_side/base.html' %}
+
+{% block content1 %}
+<style>
+    /* Add your styles for a premium design here */
+   
+    .custom-container {
+        max-width: 1300px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-h1 {
+        color: #333;
+    }
+
+    .custom-p {
+        color: #666;
+        line-height: 1.6;
+        font-size:12px;
+    }
+
+    .custom-order-details {
+        margin-top: 20px;
+        padding: 20px;
+       
+        border-radius: 6px;
+    }
+
+    .custom-product {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .custom-product img {
+        max-width: 100px;
+        margin-right: 20px;
+        border-radius: 4px;
+    }
+
+    .custom-address {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+    }
+
+    .custom-footer {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .custom-footer a {
+        color: #3498db;
+        text-decoration: none;
+    }
+    .success-message {
+        background-color: MediumSeaGreen;
+        padding: 40px; /* Increase the padding to increase the height */
+        border-radius: 5px;
+        text-align: start;
+        color: #FFF;
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px; /* Add margin to separate it from the content below */
+    }
+
+    .success-message h4 {
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="custom-container mt-5 col-12">
+    <div class="success-message">
+        <i style='font-size:40px;' class="fa-solid fa-circle-check me-3 mb-2"></i>
+        <h3>Ordered successfully</h3>
+    </div>
+    <p class="custom-p mt-2 ms-2">
+       <strong>Your expected delivery date:</strong> {{ order.first.order.expected_delivery}} .
+        <br><strong>Order Id:</strong> {{order.first.order.order_id}}
+    </p>
+
+    <div class="custom-order-details">
+        <h4 class="custom-h1 mb-3 mt-4" >Orders</h4>
+
+        <div class="table-responsive">
+            <table class="table table-bordered text-center mb-3">
+                <thead>
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Tyre Size</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in order %}
+                    <tr>
+                        <td class="align-middle"><img src="{{ i.tyrevariant.product_id.images_set.first.image.url }}" alt="Product Image" height="100px"></td>
+                        <td class="align-middle">{{ i.tyrevariant.product_id.product_name }}</td>
+                        <td class="align-middle">{{ i.tyrevariant.tyre_size }}</td>
+                        <td class="align-middle">₹{{ i.tyrevariant.offer_price }}</td>
+                        <td class="align-middle">{{ i.quantity }}</td>
+                        <td class="align-middle">₹{{ i.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-end">
+                <span style='font-size:15px;'><strong>Total:</strong></span>
+                <span  >₹{{ order.0.order.fullproducttotal }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-address mt-5">
+        <h5 class="custom-h1 mt-3 mb-3">Shipping Address</h5>
+        
+        <p class='ms-1' style='font-size:16px;'> &nbsp;{{order.first.order.address.full_name|title}}<br>
+            &nbsp;{{order.first.order.address.address|title}}<br>
+            &nbsp;{{order.first.order.address.city|title}},&nbsp;{{order.first.order.address.state|title}}<br>
+            &nbsp;{{order.first.order.address.pincode|title}}<br>
+            <i style='font-size:12px;' class="fa-solid fa-phone"></i>&nbsp;{{order.first.order.address.phone_number|title}}<br>
+        </p>
+            
+        
+    </div>
+
+    <div class="custom-footer">
+        <p class="custom-p">Thank you for shopping with us.</p>
+    </div>
+
+</div>
+<div class="d-flex justify-content-center align-items-center mb-3">
+    <a  href="../../shop/?categories_id=0&brand_id=0"><button type="button" class="btn btn-secondary" >Back to shop</button></a>
+    <a class='ms-3'  href="{% url 'invoice' %}"><button type="button" class="btn btn-secondary" >View Invoice</button></a>
+
+</div>
+</body>
+{% endblock %}
+

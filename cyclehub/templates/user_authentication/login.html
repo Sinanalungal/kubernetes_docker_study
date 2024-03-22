@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'user_authentication/css/login.css' %}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row d-flex align-item-center justify-content-center">
+
+            <div class="col-md-6 col-12  hai">
+                <div class="signup-form mt-3">
+                    <div class="logoimg pb-1">
+                        <img class="sizeForImage" src="{% static 'user_authentication/images/transparent background.png' %}" alt="">
+                    </div>
+                    <form id='form' action="{% url 'login' %}" method="POST" >
+                        {% csrf_token %}
+                        <div class="input-control mt-3 ">
+                            <input type="email" id="email" class="form-control input-with-border" name="email" placeholder="Email">
+                            <div class="error">{% if messages %}
+                                {%for i in messages %}
+                                {%if i.tags == 'info' %}
+                                    {{i}}
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}</div>
+                        </div>
+                        <div class="input-control mt-3 ">
+                            <input type="password" id="password" class="form-control input-with-border" name="password" placeholder="Password">
+                            <div class="error">{% if messages %}
+                                {%for i in messages %}
+                                {%if i.tags == 'error' %}
+                                    {{i}}
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}</div>
+                        </div>
+                        <p class="d-flex justify-content-end text-dark small"><a  href="{% url 'password-reset' %}" style='color:#1d4289'>Forgot Password?</a></p>
+                        <div class="form-group">
+                            <span id="kkkk" class="login_botten_tag">
+                                <button class="btn btn-block mt-2 buttensignup text-white" type='submit' style='background-color:#1d4289;'>Login</button>
+							</span>
+                        </div>
+                        <p class="text-center text-dark small">Don't have an account?<a  href="{%url 'signup'%}" style='color:#1d4289'>Sign Up</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+</script>
+
+
+
+</html>

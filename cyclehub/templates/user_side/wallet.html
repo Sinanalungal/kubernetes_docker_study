@@ -1,0 +1,252 @@
+{%extends 'user_side/base.html'%}
+{%load static %}
+{% block content1 %}
+  <style>
+    
+    
+    /* CSS */
+    .button-84 {
+      align-items: center;
+      background-color: initial;
+      background-image: linear-gradient(#464d55, #25292e);
+      border-radius: 8px;
+      border-width: 0;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, .1),0 3px 6px rgba(0, 0, 0, .05);
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      flex-direction: column;
+      font-family: expo-brand-demi,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+      font-size: 15px;
+      height: 35px;
+      justify-content: center;
+      line-height: 1;
+      margin: 0;
+      outline: none;
+      overflow: hidden;
+      padding: 0 32px;
+      text-align: center;
+      text-decoration: none;
+      transform: translate3d(0, 0, 0);
+      transition: all 150ms;
+      vertical-align: baseline;
+      white-space: nowrap;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    
+    .button-84:hover {
+      box-shadow: rgba(0, 1, 0, .2) 0 2px 8px;
+      opacity: .85;
+    }
+    
+    .button-84:active {
+      outline: 0;
+    }
+    
+    .button-84:focus {
+      box-shadow: rgba(0, 0, 0, .5) 0 0 0 3px;
+    }
+    
+    @media (max-width: 420px) {
+      .button-84 {
+        height: 48px;
+      }
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+  
+    header {
+      background-color: grey;
+      height: 250px;
+      text-align: center;
+      padding: 20px;
+      color: white;
+    }
+  
+    main {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+    }
+  
+    .premium-card {
+      height: 400px;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      
+    }
+  
+    
+    @media (max-width: 400px) {
+      table-container {
+          overflow-y: scroll; 
+      }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+  
+    th, td {
+      border: 1px solid #ddd;
+      padding: 15px;
+      text-align: left;
+      
+    }
+  
+    th {
+      background-color: #f2f2f2;
+    }
+  
+    #wallet {
+      min-height: 500px;
+    }
+  </style>
+
+  <title> Wallet</title>
+  {% endblock %}
+  {% block content %}
+  <div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center mb-5'><strong>WALLET</strong></div>
+
+
+  <main class="container mt-3 col-md-12 " id='wallet'>
+    <div class="row col-md-12">
+      <div class="col-md-4">
+        <div class="card premium-card align-left">
+          <div class='d-flex justify-content-end me-2 mt-2'>
+            <span class="card-text" style='font-size:12px;'><strong>Name:</strong>{{request.user.full_name}}<br><strong>Email:</strong> {{request.user.email}}</span>
+          </div>
+          <div class="card-body d-flex align-items-center justify-content-center mb-5">
+            <p class="card-text"><strong>Wallet Balance</strong><br><strong><span class='mt-3 ms-1' style='font-size:25px;'> ₹{{total}}</strong><span></p>
+            
+          </div>
+          <form id='adding' method="POST">
+            {% csrf_token %}
+            <div class='d-flex justify-content-center align-items-center me-2 mb-2'>
+              <input  class='col-10' type='number' placeholder='Enter amount' name='money'>
+            </div>
+          </form>
+          <div class='d-flex justify-content-center align-items-center me-2  mb-5'>
+            <button type='submit' id='moneysubmit' class="button-84 col-10" role="button">Add Money</button>
+          </div>
+        </div>
+      </div>
+      
+      
+      <div class="col-md-8  table-container"  style='height:390px;overflow-y:scroll;'>
+        <h5>Wallet History</h5>
+        <table class="table" >
+          <thead >
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Balance</th>
+              <th>Transaction Type</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in detail%}
+            <tr>
+              <td>{{i.date}}</td>
+              <td {% if i.transaction_type == 'credit' %}style='color:green;'{%else%}style='color:red;'{%endif%}>{% if i.transaction_type == 'credit' %}+₹{{i.amount}}{%else%}-₹{{i.amount}}{%endif%}</td>
+              <td>{{i.balance}} </td>
+              <td {% if i.transaction_type == 'credit' %}style='color:green;'{%else%}style='color:red;'{%endif%}>{{i.transaction_type}}</td>
+            </tr>
+            {%endfor%}
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+ 
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <script>
+  $(document).ready(function () {
+    $('#moneysubmit').click(function (e) {
+      // Prevent default button click behavior
+      e.preventDefault();
+
+      console.log('Button clicked');
+      var moneyadd = $('input[name="money"]').val();
+
+      if (moneyadd <= 0) {
+        Swal.fire({
+          icon: "info",
+          title: "Please add a correct price",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } else {
+        var formData = {
+          'money': moneyadd,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        };
+
+        var options = {
+          "key": "rzp_test_IUeyTKMvziJwal",
+          "amount": moneyadd*100,
+          "currency": "INR",
+          "name": "cycle hub",
+          "description": "Transaction",
+          "image": "https://media.discordapp.net/attachments/769486943439552523/1174942070893453352/13b19732-1478-4977-a41f-01e8bd9b1e6a.jpg?ex=65696d13&is=6556f813&hm=a5859223ed528b3ad8287918ec26510b98875b9448f4e810a850365ce34dd12b&=&width=1083&height=360",
+          "handler": function (response) {
+            $.ajax({
+              type: 'POST',
+              url: '{% url "wallet" %}',
+              data: formData, 
+              dataType: 'json',
+              success: function (data) {
+                console.log('Worked');
+                location.reload()
+               
+              },
+              error: function (error) {
+                Swal.fire({
+                  icon: "error",
+                  title: 'There is a problem with adding money',
+                  showConfirmButton: false,
+                  timer: 1500
+                });
+                console.log('Error submitting form');
+                console.log(error.responseText);  // Log the error response
+                // Add logic to handle the error response
+              }
+            });
+          },
+          "prefill": {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9000090000"
+          },
+          "notes": {
+            "address": "Razorpay Corporate Office"
+          },
+          "theme": {
+            "color": "#3399cc"
+          }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      }
+    });
+  });
+</script>
+
+  
+{% endblock %}

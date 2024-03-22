@@ -1,0 +1,139 @@
+{% extends 'admin_side/admin_base.html' %}
+{% load static %}
+{% block content8 %}class='active'{%endblock%}
+{% block content %}
+<style>
+    .error-message {
+        font-size: 10px;
+        color: red;
+    }
+</style>
+        <div class="breadcrumbs">
+            <div class="breadcrumbs-inner">
+                <div class="row m-0">
+                    <div class="col-sm-4">
+                        <div class="page-header float-left">
+                            <div class="page-title">
+                                <h1>Add Coupons</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="page-header float-right">
+                            <div class="page-title">
+                                <ol class="breadcrumb text-right">
+                                    <li><a href="#">Dashboard</a></li>
+                                    <li class="active">Add coupons</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+                <div class="row">
+                    <div class="col-lg-12">
+                            <form id="couponForm" action='' method='POST'>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="couponcode" placeholder='Coupon Code'  name="couponcode" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="coupontitle" placeholder='Coupon Title' name="coupontitle" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder='Discount' id="discount" placeholder='Discount' name="discount" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <select class="form-control" id="discountMethod" name="discountmethod" required>
+                                        <option value="" disabled selected>Select a discount method</option>
+                                        <option value="price">Price</option>
+                                        <option value="percentage">Percentage</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder='Quantity' id="quantity" name="quantity" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="minimumorder" placeholder='Minimum Order' name="minimumorder" required>
+                                </div>
+                                   
+                                <div class="form-group">
+                                    <input type="date" class="form-control" id="validfrom" placeholder='Valid From' name="validfrom" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <input type="date" class="form-control" id="validto" placeholder='Valid to' name="validto" required>
+                                </div>
+                    
+                                <button type="submit" class="btn btn-primary">Add Coupon</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+
+        </div>
+    </div><!-- .animated -->
+</div><!-- .content -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#couponForm").submit(function (event) {
+            $(".error-message").remove();
+
+            var couponCode = $("#couponcode").val();
+            if (!/^[a-zA-Z0-9]+$/.test(couponCode) || /(.)\1\1/.test(couponCode) || /\s/.test(couponCode)) {
+                event.preventDefault();
+                $("#couponcode").after('<div class="error-message">Invalid Coupon Code</div>');
+            }
+
+            var couponTitle = $("#coupontitle").val();
+            if (/ {2,}/.test(couponTitle) || /^ /.test(couponTitle)) {
+                event.preventDefault();
+                $("#coupontitle").after('<div class="error-message">Invalid Coupon Title</div>');
+            }
+
+            var discount = $("#discount").val();
+            if (!$.isNumeric(discount) || /\s/.test(discount) || discount < 0) {
+                event.preventDefault();
+                $("#discount").after('<div class="error-message">Invalid Discount</div>');
+            }
+
+            var discountMethod = $("#discountMethod").val();
+            if (discountMethod === "" || (discountMethod === "price" && (discount > 1000 || discount < 0)) ||
+                (discountMethod === "percentage" && (discount > 100 || discount < 0))) {
+                event.preventDefault();
+                $("#discountMethod").after('<div class="error-message">Invalid Discount Method or Amount</div>');
+            }
+
+            var quantity = $("#quantity").val();
+            if (!$.isNumeric(quantity) || /\s/.test(quantity) || quantity < 0) {
+                event.preventDefault();
+                $("#quantity").after('<div class="error-message">Invalid Quantity</div>');
+            }
+
+            var minimumOrder = $("#minimumorder").val();
+            if (!$.isNumeric(minimumOrder) || /\s/.test(minimumOrder) || minimumOrder < 0) {
+                event.preventDefault();
+                $("#minimumorder").after('<div class="error-message">Invalid Minimum Order</div>');
+            }
+
+            var validFrom = new Date($("#validfrom").val());
+            var validTo = new Date($("#validto").val());
+            var today = new Date();
+            if (validFrom < today || validTo < today || validTo < validFrom) {
+                event.preventDefault();
+                $("#validfrom").after('<div class="error-message">Invalid Date Range</div>');
+            }
+        });
+    });
+</script>
+{%endblock%}

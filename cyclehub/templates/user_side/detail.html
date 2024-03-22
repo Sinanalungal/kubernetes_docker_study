@@ -1,0 +1,541 @@
+{%extends 'user_side/base.html'%}
+{%load static %}
+{% block content1 %}
+<link href="{% static 'user_side/css/detail.css'%}" rel="stylesheet">
+<style>
+	.custom-select {
+        position: relative;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        width: 120px; 
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .custom-select select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-color: #fff;
+        color: #333;
+        padding: 8px;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .custom-select::before {
+		content: '\25BC';
+		position: absolute;
+		top: 53%;
+		right: 13px;
+		transform: translateY(-50%);
+		pointer-events: none;
+    }
+
+    
+    .custom-select:hover,
+    .custom-select select:focus {
+        border-color: #1d4289;
+    }
+	.my-button {
+		border: 1px solid #343a40;
+		color: #000;
+		background-color: transparent;
+		margin-right: 10px;
+		padding: 8px 10px;
+	}
+	.my-button:hover {
+		background-color: #1d4289; 
+		color: #fff;
+	}
+	/* Default button style */
+	.size-variant-button {
+		background-color: #your-default-color;
+		color: #your-default-text-color;
+	}
+	
+	/* Style for clicked button */
+	.size-variant-button.clicked {
+		background-color: #your-clicked-color;
+		color: #your-clicked-text-color;
+	}
+
+	.detail_1l .carousel-indicators [data-bs-target] {
+		background-color: #1d4289!important;
+	}
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+<div style='background-color:#1d4289;height:70px;width:100%;color:white;font-size:30px;' class='d-flex align-items-center justify-content-center mb-5'><strong>PRODUCT DETAIL</strong></div>
+
+<div id="product-details">
+	<section id="detail" class="pt-4 pb-4">
+	
+		<div class="container-xl mb-3">
+		  <div class="row detail_1">
+		   <div class="col-md-6">
+			<div class="detail_1l">
+				<div id="carouselExampleCaptions" class="carousel slide">
+					<div class="carousel-indicators">
+						{% for i in k.images_set.all %}
+							<button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+						{% endfor %}
+					</div>
+					<div class="carousel-inner main-image">
+						{% for image in k.images_set.all %}
+							<div class="carousel-item {% if forloop.first %}active{% endif %}">
+								<img src="{{ image.image.url }}" id='main-img-{{ forloop.counter0 }}' class="d-block w-100" alt="abc">
+							</div>
+						{% endfor %}
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+				
+			</div>
+		   </div>
+		   <div class="col-md-6">
+			<div class="detail_1r">
+			<form method="post" action="{% url 'add_to_cart' %}">
+				{% csrf_token %}
+			
+			<h6 class="stock-status d-inline-block bg-success text-white font_12 ps-3 pe-3 pt-2 pb-2 rounded-1">In Stock</h6>
+			 <h4 class="mt-2 mb-2">{{k.product_name|title}}</h4>
+			{% if k.category_id.category_offer == 0 and k.product_offer == 0%}
+			 <h4 class="mt-3 mb-3" style='font-size:19px;'><span class="dynamic-offer-price col_yell me-1">{{k.tyresize_set.all.0.offer_price}}</span></h4>
+            {%else%}
+			 <h4 class="mt-3 mb-3" style='font-size:19px;'><span class="dynamic-offer-price col_yell me-1">{{k.tyresize_set.all.0.offer_price}}</span><span class="dynamic-price font_14  text-decoration-line-through " style='color:red;'>{{k.tyresize_set.all.0.price}}</span></h4>
+			{%endif%}
+			 <p>{{ k.description |title}}</p>
+			 <h6><span class="me-2">Size :</span> 
+		   </h6>
+
+				 <div class="custom-select">
+					<select name='tyresize_id' id="tyresize" class="form-select form-select-sm">
+						{% for j in k.tyresize_set.all|dictsort:"tyre_size" %}
+							{% if j.is_listed %}
+								<option value="{{ j.id }}" data-stock="{{ j.stock }}">{{ j.tyre_size }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+				
+				
+			   </div>
+			   <div class="mt-4 d-flex d-inline mb-2">
+				<button type='submit' class='btn btn' style='background-color:#1d4289;color:white;' id="add-to-cart-button" >
+					<i class="fa-solid fa-cart-shopping me-2"></i>Add to Cart
+				</button>
+				 <span class='wishlist ms-2 btn btn' data-product-id='{{k.id}}'><i  class="fa fa-heart-o col_yell me-1"></i> Add To Wishlist</span>
+
+			   </div>
+				</form>
+				 <hr class='mt-4 mb-5' >
+				 <h6 class="font_13 col_light" style='font-size:14px!important;'>BRAND : <a class="col_light" href="#">{{k.brand_id.brand_name|title}}</a></h6>
+				 <h6 class="font_13 col_light mt-3 mb-0" style='font-size:14px!important;'>CATEGORY : <a class="col_light" href="#">{{k.category_id.category_name|title}}</a></h6>
+			</div>
+		   </div>
+		  </div>
+</div>
+
+
+
+<div class='container'>	  
+
+   </div>
+ </div>
+</div>
+</section>
+{% endblock %}
+
+
+{% block content2 %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Include SweetAlert2 library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+	$(document).ready(function () {
+		$(document).on('click', '.wishlist', function () {
+			const clickedIcon = $(this);
+			const productID = clickedIcon.data('product-id');
+			const isFavorite = clickedIcon.hasClass('fas');
+	
+			// Make AJAX request
+			$.ajax({
+				type: 'POST',
+				url: '../../wishlist_toggle/',
+				data: {
+					'product_id': productID,
+					
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+				},
+				success: function (data) {
+					if (data.success) {
+						Swal.fire({
+							title: "Success",
+							text: "Product added to Wishlist",
+							icon: "success"
+						});
+					} else {
+						Swal.fire({
+							title: "error",
+							text: data.message,
+							icon: "error"
+						});
+					}
+				},
+				error: function (xhr, errmsg, err) {
+					console.log('Error adding to wishlist', xhr.responseText);
+				}
+			});
+		});
+	});
+	
+</script>
+
+<script>
+
+    $(document).ready(function () {
+		{% if request.user.is_authenticated %}
+			// User is authenticated, enable the add to cart button
+			$('.size-variant-button').on('click', function () {
+				$('#add-to-cart-button').prop('disabled', false);
+			});
+	
+			$('#add-to-cart-button').on('click', function (event) {
+				event.preventDefault();
+				addToCart();
+			});
+	
+		{% else %}
+			// User is not authenticated, show login alert
+			$('#add-to-cart-button').on('click', function (event) {
+				event.preventDefault();
+				Swal.fire({
+					title: "Login Required",
+					text: "Please log in to add items to the cart.",
+					icon: "info",
+					showCancelButton: true,
+					confirmButtonText: 'Log In',
+					cancelButtonText: 'Cancel'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// Redirect to the login page
+						window.location.href = '{% url "login" %}';
+					}
+				});
+			});
+	
+		{% endif %}
+	
+		function addToCart() {
+			var tyresizeId = $('#tyresize').val();
+	
+			// Reset quantity to 1
+			var quantity = 1;
+	
+			if (tyresizeId) {
+				$.ajax({
+					type: 'POST',
+					url: '/add_to_cart/',
+					data: {
+						'tyresize_id': tyresizeId,
+						'quantity': quantity,
+						'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val(),
+					},
+					success: function (data) {
+						if (data.error) {
+							Swal.fire({
+								title: "Error",
+								text: data.error,
+								icon: "error"
+							});
+						} else {
+							Swal.fire({
+								title: "Success",
+								text: "Product added to the cart",
+								icon: "success"
+							});
+						}
+					},
+					error: function () {
+						Swal.fire({
+							title: "Error",
+							text: "Failed to add product to the cart",
+							icon: "error"
+						});
+					}
+				});
+			} else {
+				Swal.fire({
+					title: "Error",
+					text: "Invalid tire size selected",
+					icon: "error"
+				});
+			}
+		}
+	});
+	
+</script>
+
+
+
+<script>
+	// Zoom 0
+{
+const mainImage = document.querySelector('.main-image');
+const img = document.getElementById('main-img-0');
+
+mainImage.addEventListener('mousemove', zoomIn);
+mainImage.addEventListener('mouseleave', zoomOut);
+
+function zoomIn(event) {
+  const boundingRect = mainImage.getBoundingClientRect();
+  const mouseX = event.clientX - boundingRect.left;
+  const mouseY = event.clientY - boundingRect.top;
+
+  const offsetX = (mouseX / boundingRect.width) * 100;
+  const offsetY = (mouseY / boundingRect.height) * 100;
+
+  img.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+  img.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+}
+
+function zoomOut() {
+  img.style.transform = 'scale(1)';
+}
+}
+
+// Zoom 1
+{
+const mainImage1 = document.querySelector('.main-image');
+const img1 = document.getElementById('main-img-1');
+
+mainImage1.addEventListener('mousemove', zoomIn1);
+mainImage1.addEventListener('mouseleave', zoomOut1);
+
+function zoomIn1(event) {
+  const boundingRect1 = mainImage1.getBoundingClientRect();
+  const mouseX1 = event.clientX - boundingRect1.left;
+  const mouseY1 = event.clientY - boundingRect1.top;
+
+  const offsetX1 = (mouseX1 / boundingRect1.width) * 100;
+  const offsetY1 = (mouseY1 / boundingRect1.height) * 100;
+
+  img1.style.transformOrigin = `${offsetX1}% ${offsetY1}%`;
+  img1.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+}
+
+function zoomOut1() {
+  img1.style.transform = 'scale(1)';
+}
+}
+
+// Zoom 2
+{
+const mainImage2 = document.querySelector('.main-image');
+const img2 = document.getElementById('main-img-2');
+
+mainImage2.addEventListener('mousemove', zoomIn2);
+mainImage2.addEventListener('mouseleave', zoomOut2);
+
+function zoomIn2(event) {
+  const boundingRect2 = mainImage2.getBoundingClientRect();
+  const mouseX2 = event.clientX - boundingRect2.left;
+  const mouseY2 = event.clientY - boundingRect2.top;
+
+  const offsetX2 = (mouseX2 / boundingRect2.width) * 100;
+  const offsetY2 = (mouseY2 / boundingRect2.height) * 100;
+
+  img2.style.transformOrigin = `${offsetX2}% ${offsetY2}%`;
+  img2.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+}
+
+function zoomOut2() {
+  img2.style.transform = 'scale(1)';
+}
+}
+
+// Zoom 3
+{
+const mainImage3 = document.querySelector('.main-image');
+const img3 = document.getElementById('main-img-3');
+
+mainImage3.addEventListener('mousemove', zoomIn3);
+mainImage3.addEventListener('mouseleave', zoomOut3);
+
+function zoomIn3(event) {
+  const boundingRect3 = mainImage3.getBoundingClientRect();
+  const mouseX3 = event.clientX - boundingRect3.left;
+  const mouseY3 = event.clientY - boundingRect3.top;
+
+  const offsetX3 = (mouseX3 / boundingRect3.width) * 100;
+  const offsetY3 = (mouseY3 / boundingRect3.height) * 100;
+
+  img3.style.transformOrigin = `${offsetX3}% ${offsetY3}%`;
+  img3.style.transform = 'scale(2)'; // Adjust the scale factor as desired
+}
+
+function zoomOut3() {
+  img3.style.transform = 'scale(1)';
+}
+}
+$(document).ready(function () {
+    $('#tyresize').on('change', function () {
+        var selectedOption = $(this).find('option:selected');
+        var variantId = selectedOption.val();
+        var stock = selectedOption.data('stock');
+        var quantityInput = $('#quantity-input');
+        var stockDet1 = $('.stockdet1');
+        var stockDet2 = $('.stockdet2');
+
+        if (stock <= 0) {
+            quantityInput.val(0);
+            quantityInput.attr('max', 0);
+            quantityInput.attr('min', 0);
+            quantityInput.prop('disabled', true);
+            stockDet1.removeClass('d-none');
+            stockDet2.addClass('d-none');
+        } else {
+            quantityInput.val(1);
+            quantityInput.attr('max', stock);
+            quantityInput.attr('min', 1);
+            stockDet1.addClass('d-none');
+            stockDet2.removeClass('d-none');
+
+            // Trigger the AJAX call when a size variant is selected
+            updatePrice(variantId);
+        }
+    });
+
+    // Initialize input field and stock details based on the initially selected tire size
+    $('#tyresize').trigger('change');
+
+    // Function to update the price using AJAX
+   // Function to update the price and offer price using AJAX
+function updatePrice(variantId) {
+    $.ajax({
+        type: 'GET',
+        url: '/get_variant_details/' + variantId + '/',
+        dataType: 'json',
+        success: function (data) {
+            // Update the dynamic price and offer price displays with the fetched prices
+            $('.dynamic-price').text(data.price);
+            $('.dynamic-offer-price').text(data.offer_price);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching prices:', error);
+        }
+    });
+}
+
+});
+
+// Function to update the price, offer price, and stock status using AJAX
+$(document).ready(function () {
+    // ...
+
+    function updateDetails(variantId) {
+        $.ajax({
+            type: 'GET',
+            url: '/get_variant_details/' + variantId + '/',
+            dataType: 'json',
+            success: function (data) {
+                // Update the dynamic price and offer price displays with the fetched prices
+                $('.dynamic-price').text(data.price);
+                $('.dynamic-offer-price').text(data.offer_price);
+
+                // Update the stock status based on the fetched stock
+                var stockStatus = $('.stock-status');
+                if (data.stock > 0) {
+                    stockStatus.removeClass('bg-danger').addClass('bg-success');
+                    stockStatus.text('In Stock');
+                } else {
+                    stockStatus.removeClass('bg-success').addClass('bg-danger');
+                    stockStatus.text('Out of Stock');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching details:', error);
+            }
+        });
+    }
+
+    $('#tyresize').on('change', function () {
+        var selectedOption = $(this).find('option:selected');
+        var variantId = selectedOption.val();
+        updateDetails(variantId);
+        // ... (rest of your existing code)
+    });
+
+    // Initialize input field and stock details based on the initially selected tire size
+    $('#tyresize').trigger('change');
+});
+
+</script>
+
+{% comment %} -------------------------------------------- {% endcomment %}
+{% comment %} <script>
+	
+    // Increment and decrement the quantity input
+    $('#quantity-input').on('input', function () {
+        var quantity = $(this).val();
+        if (quantity <= 0) {
+            $('#add-to-cart-button').prop('disabled', true);
+        } else {
+            $('#add-to-cart-button').prop('disabled', false);
+        }
+    });
+
+    $('#quantity-input').on('change', function () {
+        var quantity = parseInt($(this).val());
+        var max = parseInt($(this).attr('max'));
+        if (isNaN(quantity) || quantity < 1) {
+            $(this).val(1);
+        } else if (quantity > max) {
+            $(this).val(max);
+        }
+    });
+
+    $('.quantity-plus').on('click', function () {
+        var input = $('#quantity-input');
+        var max = parseInt(input.attr('max'));
+        var quantity = parseInt(input.val());
+		
+        $.ajax({
+            type: 'POST',
+            url: '/quantityplus/' + variantId + '/',
+            dataType: 'json',
+            success: function(data) {
+                // Update the dynamic price display with the fetched price
+               
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching details:', error);
+            }
+        });
+    });
+
+    $('.quantity-minus').on('click', function () {
+        var input = $('#quantity-input');
+        var quantity = parseInt(input.val());
+        if (!isNaN(quantity) && quantity > 1) {
+            input.val(quantity - 1);
+        }
+    });
+	
+</script> {% endcomment %}
+
+
+
+{% endblock %}

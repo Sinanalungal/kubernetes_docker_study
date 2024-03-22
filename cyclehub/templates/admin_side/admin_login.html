@@ -1,0 +1,110 @@
+{% load static %}
+<!doctype html>
+ <html class="no-js" lang=""> 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Admin Login</title>
+    <meta name="description" content="Ela Admin - HTML5 Admin Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.0/normalize.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.0/css/flag-icon.min.css">
+    <link rel="stylesheet" href={% static 'admin_side/css/cs-skin-elastic.css'%}>
+    <link rel="stylesheet" href={% static 'admin_side/css/style.css'%}>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+</head>
+<body class="bg-transparent">
+    <div class="sufee-login d-flex align-content-center flex-wrap mt-5">
+        <div class="container mt-5">
+            <div class="login-content" style='border-left: 3px solid grey;
+            border-right: 3px solid grey;
+            border-radius: 10px;
+            padding: 20px; '>
+                
+                <div class="login-logo mb-4">
+                    <a href="" >
+                            <img class="align-content w-50" src={% static 'user_authentication/images/transparent background.png' %} alt="">
+                    </a>
+                </div>
+                <h2 style='color:#1d4289;'><strong>&nbsp; &nbsp; Admin Login</strong></h2>
+                <div class="login-form" >
+                    <form action="{% url 'admin_login' %}"  method='POST' id='form'>
+                        {% csrf_token %}
+                        <div class="form-group mt-1 mb-4">
+                            <input type="email" id='email' class="form-control" name="email" placeholder="Email" style='border-radius:10px;'>
+                            
+                        </div>
+                        <div class="form-group mt-1 mb-4">
+                            <input type="password" class="form-control" name="password" placeholder="Password" style='border-radius:10px;'>
+                        </div>
+                        <button type="submit" class="btn  btn-flat m-b-30  m-t-30" style='background-color:#1d4289;color:white; border-radius:10px;'>Admin Login</button>
+                        <div class="error mt-2" id="err" style="color:red;">
+                            {% if messages %}
+                                {% for i in messages %}
+                                    {% if i.tags == 'error' %}
+                                        {{ i }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>  
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
+    <script src={% static 'admin_side/js/main.js'%}></script>
+    <script>
+        const myDiv = document.getElementById("err");
+    
+        if (myDiv.textContent.trim() !== '') {
+            myDiv.style.display = "block";
+        } else {
+            myDiv.style.display = "none";
+        }
+    
+        
+        setTimeout(function () {
+            err.style.display = "none";
+        }, 3000);
+    
+        $(document).ready(function() {
+            $('#form').submit(function(e) {
+                e.preventDefault();
+                $('.error').html('');
+    
+                var email = $('#email').val();
+    
+                // Define validation rules here
+                var isValid = true;
+    
+                if (email === '') {
+                    isValid = false;
+                    $('#email').next('.error').html('Email is required.');
+                } else if (!isValidEmail(email)) {
+                    isValid = false;
+                    $('#email').next('.error').html('Invalid email format.');
+                }
+    
+                if (isValid) {
+                    $('#form')[0].submit();
+                }
+            });
+    
+            function isValidEmail(email) {
+                var emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+                return emailRegex.test(email);
+            }
+        });
+    </script>
+    
+</body>
+</html>
