@@ -14,9 +14,11 @@ Before deploying this Django project, ensure the following dependencies are inst
 
 Follow these steps to deploy the Django project using Docker and Kubernetes:
 
+
 1. *Clone Repository*: Clone this repository to your local machine.
    ```bash
    git clone https://github.com/Sinanalungal/kubernetes_docker_study.git
+
    
 2. ## create cyclehub-secret.yaml file
    ```yaml
@@ -41,6 +43,7 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
         kubectl apply -f <secretroot/cyclehub-secret.yaml>
       ```
 
+
 3. ## create postgres-secret.yaml file
   ```yaml
     apiVersion: v1
@@ -58,6 +61,7 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
       ```bash
         kubectl apply -f <secretroot/postgres-secret.yaml>
       ```
+      
 4. ## create .env file
   ``` .env
       SECRET_KEY=
@@ -71,11 +75,13 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
       POSTGRES_HOST=
 ```
 
+
 5. ## Run with Docker-compose
    ```
       docker-compose up -d
    ```
   Now you can run on localhost:8000. For this, you only need to create the .env file; .yaml files are not needed.
+
   
 6. ## Deployment with Kuberneties
    ```
