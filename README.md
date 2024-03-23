@@ -16,7 +16,7 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
 
 1. *Clone Repository*: Clone this repository to your local machine.
    ```bash
-   git clone https://github.com/asifxohd/kubernetes.git
+   git clone https://github.com/Sinanalungal/kubernetes_docker_study.git
    
 2. ## create cyclehub-secret.yaml file
    ```yaml
