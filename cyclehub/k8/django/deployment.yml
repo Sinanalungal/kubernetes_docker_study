@@ -20,8 +20,8 @@ spec:
           envFrom:
           - secretRef:
               name: cyclehub-secret
-          - configMapRef:
-              name: cyclehub-config
+          # - configMapRef:
+          #     name: cyclehub-config
           ports:
             - containerPort: 80
               name: gunicorn
@@ -32,3 +32,16 @@ spec:
       #   - name: media-volume-mount
       #     persistentVolumeClaim:
       #       claimName: media-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cyclehub-clusteip-srv
+spec:
+  selector:
+    app: cyclehub
+  ports:
+    - name: cyclehub-clusteip-srv
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
