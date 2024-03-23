@@ -75,7 +75,7 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
    ```
       docker-compose up -d
    ```
-  now you can run inthe localhost:8000 ( for this you only need to create .env , .yaml files are not needed )
+  Now you can run on localhost:8000. For this, you only need to create the .env file; .yaml files are not needed.
   
 6. ## Deployment with Kuberneties
    ```
@@ -83,7 +83,6 @@ Follow these steps to deploy the Django project using Docker and Kubernetes:
      kubctl apply -f <k8/postgres file directory>
      kubctl apply -f <k8/volume file directory>
 
-  by this you successfully able to run with using node port service and also nginx for nginx you want to configure ( 127.0.0.1 cyclehub.com ) in the host file .so you can run.
-  other wise using ( kubectl get services ) you get node port and in that using target port with (localhost:targetport) you are able to run . 
+  By doing this, you will successfully be able to run using NodePort service. Additionally, for Nginx, you'll need to configure 127.0.0.1 cyclehub.com in the host file. Otherwise, you can use kubectl get services to get the NodePort and access the service using localhost:targetport.
 
 happy coding
